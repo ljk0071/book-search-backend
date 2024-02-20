@@ -1,15 +1,15 @@
 package com.booksearch.model;
 
-public class Page {
+public class PageInfo {
 
     private int page;
 
     private int pageSize;
 
-    public Page() {
+    public PageInfo() {
     }
 
-    public Page(int page, int pageSize) {
+    public PageInfo(int page, int pageSize) {
         this.page = page;
         this.pageSize = pageSize;
     }

@@ -1,7 +1,8 @@
 package com.booksearch.internal.repository;
 
 import com.booksearch.model.Book;
-import com.booksearch.model.Page;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,16 +13,16 @@ public interface BookRepository {
 
     Book find(Long id);
 
-    List<Book> findByAuthors(String authors, Page page);
+    BooksInfo findByAuthors(String authors, PageInfo pageInfo);
 
-    List<Book> findByContents(String contents, Page page);
+    List<Book> findByContents(String contents, PageInfo pageInfo);
 
-    List<Book> findByPublishDateTime(LocalDateTime publishDateTime, Page page);
+    List<Book> findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo);
 
-    List<Book> findByIsbn(String isbn, Page page);
+    List<Book> findByIsbn(String isbn, PageInfo pageInfo);
 
-    List<Book> findByPrice(int price, Page page);
+    List<Book> findByPrice(int price, PageInfo pageInfo);
 
-    List<Book> findByPublisher(String publisher, Page page);
+    List<Book> findByPublisher(String publisher, PageInfo pageInfo);
 
 }

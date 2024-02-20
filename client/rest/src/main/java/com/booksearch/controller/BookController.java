@@ -2,6 +2,7 @@ package com.booksearch.controller;
 
 import com.booksearch.dto.BookRequestDto;
 import com.booksearch.dto.BookResponseDto;
+import com.booksearch.dto.BooksInfoResponseDto;
 import com.booksearch.dto.util.ApiResponse;
 import com.booksearch.usecase.BookSearchUseCase;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class BookController {
     private final BookSearchUseCase bookSearchUseCase;
 
     @GetMapping
-    public ApiResponse<List<BookResponseDto>> findBooks(BookRequestDto bookRequestDto) {
+    public ApiResponse<BooksInfoResponseDto> findBooks(BookRequestDto bookRequestDto) {
 
         return ApiResponse.ok(bookSearchUseCase.findBooks(bookRequestDto));
     }

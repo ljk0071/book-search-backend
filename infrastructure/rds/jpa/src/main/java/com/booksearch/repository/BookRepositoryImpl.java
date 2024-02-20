@@ -4,8 +4,10 @@ import com.booksearch.entity.BookEntity;
 import com.booksearch.internal.repository.BookRepository;
 import com.booksearch.mapper.BookMapper;
 import com.booksearch.model.Book;
-import com.booksearch.model.Page;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -23,43 +25,48 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findByAuthors(String authors, Page page) {
-        List<BookEntity> bookEntities = repository.findByAuthors(
+    public BooksInfo findByAuthors(String authors, PageInfo pageInfo) {
+        int pageSize = pageInfo.getPageSize();
+        Page<BookEntity> bookEntities = repository.findByAuthors(
                 authors,
                 PageRequest.of(
-                        page.getPage(),
-                        page.getPageSize(),
+                        (pageInfo.getPage() - 1) * pageSize,
+                        pageSize,
                         Sort.Direction.DESC,
                         "publishDateTime"
                 )
         );
-        return bookEntities.stream()
-                .map(BookMapper::toDomain)
-                .toList();
+        return new BooksInfo(
+                bookEntities.getTotalPages(),
+                bookEntities.getTotalElements(),
+                bookEntities.stream()
+                        .map(BookMapper::toDomain)
+                        .toList()
+        );
     }
 
     @Override
-    public List<Book> findByContents(String contents, Page page) {
+    public List<Book> findByContents(String contents, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime, Page page) {
+    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByIsbn(String isbn, Page page) {
+    public List<Book> findByIsbn(String isbn, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPrice(int price, Page page) {
+    public List<Book> findByPrice(int price, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublisher(String publisher, Page page) {
+    public List<Book> findByPublisher(String publisher, PageInfo pageInfo) {
         return null;
     }
 

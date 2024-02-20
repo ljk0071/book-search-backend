@@ -2,11 +2,10 @@ package com.booksearch.internal.service;
 
 import com.booksearch.internal.repository.BookRepository;
 import com.booksearch.model.Book;
-import com.booksearch.model.Page;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 import com.booksearch.util.StringUtils;
 
-import java.awt.print.Pageable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,22 +20,24 @@ public class BookService {
         return repository.create(originName);
     }
 
-    public List<Book> findBooks(Page page, Book book) {
+    public BooksInfo findBooks(PageInfo pageInfo, Book book) {
 
-        List<Book> books = new ArrayList<>();
+        BooksInfo booksInfo = null;
 
         if (StringUtils.hasText(book.getAuthors())) {
-            books = repository.findByAuthors(book.getAuthors(), page);
-        } else if (StringUtils.hasText(book.getContents())) {
-            books = repository.findByContents(book.getContents(), page);
-        } else if (book.getPublishDateTime() != null) {
-            books = repository.findByPublishDateTime(book.getPublishDateTime(), page);
-        } else if (book.getIsbn() != null) {
-            books = repository.findByIsbn(book.getIsbn(), page);
+            booksInfo = repository.findByAuthors(book.getAuthors(), pageInfo);
         }
 
+//        else if (StringUtils.hasText(book.getContents())) {
+//            books = repository.findByContents(book.getContents(), pageInfo);
+//        } else if (book.getPublishDateTime() != null) {
+//            books = repository.findByPublishDateTime(book.getPublishDateTime(), pageInfo);
+//        } else if (book.getIsbn() != null) {
+//            books = repository.findByIsbn(book.getIsbn(), pageInfo);
+//        }
 
-        return books;
+
+        return booksInfo;
     }
 
     public Book find(Long id) {

@@ -2,10 +2,12 @@ package com.booksearch.usecase;
 
 import com.booksearch.dto.BookRequestDto;
 import com.booksearch.dto.BookResponseDto;
+import com.booksearch.dto.BooksInfoResponseDto;
 import com.booksearch.internal.service.BookService;
 import com.booksearch.mapper.BookMapper;
 import com.booksearch.model.Book;
-import com.booksearch.model.Page;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +27,21 @@ public class BookSearchUseCase {
     }
 
     @Transactional(readOnly = true)
-    public List<BookResponseDto> findBooks(BookRequestDto bookSearchRequestDto) {
-        List<Book> books = bookService.findBooks(
-                new Page(
+    public BooksInfoResponseDto findBooks(BookRequestDto bookSearchRequestDto) {
+        BooksInfo booksInfo = bookService.findBooks(
+                new PageInfo(
                         bookSearchRequestDto.getPage(),
                         bookSearchRequestDto.getPageSize()
                 ),
                 BookMapper.toDomain(bookSearchRequestDto)
         );
-        return books.stream()
-                .map(BookMapper::toResponse)
-                .toList();
+        return new BooksInfoResponseDto(
+                booksInfo.getTotalPage(),
+                booksInfo.getTotalElements(),
+                booksInfo.getBooks().stream()
+                        .map(BookMapper::toResponse)
+                        .toList()
+        );
     }
 
     @Transactional(readOnly = true)
