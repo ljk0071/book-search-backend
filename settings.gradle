@@ -1,0 +1,35 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'book-search-backend'
+include(
+        ':domain'
+)
+
+include(
+        'infrastructure:rds:jpa',
+        'infrastructure:redis',
+)
+
+include(
+        'client:rest',
+)
+
+include(
+        'library:logging',
+        'library:monitoring',
+        'library:utils',
+        'library:api-docs',
+)

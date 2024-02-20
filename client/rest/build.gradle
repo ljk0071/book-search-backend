@@ -1,0 +1,23 @@
+dependencies {
+    // Module Domain
+    implementation(project(':domain'))
+
+    // Module Infrastructure
+    implementation(project(":infrastructure:redis"))
+    implementation(project(":infrastructure:rds:jpa"))
+
+    implementation(project(":library:utils"))
+    testImplementation(project(":library:api-docs"))
+    implementation(project(":library:logging"))
+    implementation(project(":library:monitoring"))
+
+
+    // Spring
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

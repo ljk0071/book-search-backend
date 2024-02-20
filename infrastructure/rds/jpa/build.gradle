@@ -1,0 +1,17 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    // Module
+    implementation(project(":domain"))
+
+    // Spring
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // DB
+    runtimeOnly("com.h2database:h2")
+
+    // Test
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.h2database:h2")
+}
