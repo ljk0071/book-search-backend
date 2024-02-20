@@ -1,11 +1,14 @@
 # Spring Boot Template Multi-Module With Clean Architechture
 
+#### Referenced by java-boot-template by [@kimsunhak](https://github.com/kimsunhak)
+#### thank you so much
+
 
 ### 🧷 Tech Stack
 
 - #### Architecture : Clean Architecture
 
-- #### Language : Java 11
+- #### Language : Java 21
 - #### Infra : Docker, Redis
 
 
