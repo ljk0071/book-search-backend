@@ -19,6 +19,9 @@ public class BookEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "TITLE", length = 100)
+    private String title;
+
     @Column(name = "AUTHORS", length = 100)
     private String authors;
 
@@ -41,8 +44,9 @@ public class BookEntity extends BaseEntity {
     private String thumbnail;
 
     @Builder
-    public BookEntity(Long id, String authors, String contents, LocalDateTime publishDateTime, String isbn, int price, String publisher, String thumbnail) {
+    public BookEntity(Long id, String title, String authors, String contents, LocalDateTime publishDateTime, String isbn, int price, String publisher, String thumbnail) {
         this.id = id;
+        this.title = title;
         this.authors = authors;
         this.contents = contents;
         this.publishDateTime = publishDateTime;

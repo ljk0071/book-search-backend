@@ -14,4 +14,6 @@ public abstract class SearchRequestDto {
     private String searchType;
 
     private int page;
+
+    private int pageSize;
 }

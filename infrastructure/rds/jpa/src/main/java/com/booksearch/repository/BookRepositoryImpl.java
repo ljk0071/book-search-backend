@@ -4,7 +4,10 @@ import com.booksearch.entity.BookEntity;
 import com.booksearch.internal.repository.BookRepository;
 import com.booksearch.mapper.BookMapper;
 import com.booksearch.model.Book;
+import com.booksearch.model.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,39 +23,49 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findByAuthors(String authors) {
+    public List<Book> findByAuthors(String authors, Page page) {
+        List<BookEntity> bookEntities = repository.findByAuthors(
+                authors,
+                PageRequest.of(
+                        page.getPage(),
+                        page.getPageSize(),
+                        Sort.Direction.DESC,
+                        "publishDateTime"
+                )
+        );
+        return bookEntities.stream()
+                .map(BookMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Book> findByContents(String contents, Page page) {
         return null;
     }
 
     @Override
-    public List<Book> findByContents(String contents) {
+    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime, Page page) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime) {
+    public List<Book> findByIsbn(String isbn, Page page) {
         return null;
     }
 
     @Override
-    public List<Book> findByIsbn(String isbn) {
+    public List<Book> findByPrice(int price, Page page) {
         return null;
     }
 
     @Override
-    public List<Book> findByPrice(int price) {
+    public List<Book> findByPublisher(String publisher, Page page) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublisher(String publisher) {
-        return null;
-    }
-
-    @Override
-    public Book find(Book book) {
-        String authors = book.getAuthors();
-        BookEntity bookEntity = repository.findByAuthors(authors).orElseThrow(() -> new IllegalStateException(authors + " doesn't exist"));
+    public Book find(Long id) {
+        BookEntity bookEntity = repository.findById(id).orElseThrow(() -> new IllegalStateException("book doesn't exist"));
         return BookMapper.toDomain(bookEntity);
     }
 

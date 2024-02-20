@@ -26,8 +26,6 @@ public class BookMapper {
 
         String searchKeyword = bookSearchRequestDto.getSearchKeyword();
 
-        bookSearchRequestDto.getPage();
-
         String type = bookSearchRequestDto.getSearchType();
 
         if ("ALL".equals(type)) {
