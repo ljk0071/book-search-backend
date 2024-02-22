@@ -6,18 +6,11 @@ import com.booksearch.model.BooksInfo;
 import com.booksearch.model.PageInfo;
 import com.booksearch.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BookService {
     private final BookRepository repository;
 
     public BookService(BookRepository repository) {
         this.repository = repository;
-    }
-
-    public Book create(String originName) {
-        return repository.create(originName);
     }
 
     public BooksInfo findBooks(PageInfo pageInfo, Book book) {
