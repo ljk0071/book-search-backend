@@ -5,7 +5,8 @@ import com.booksearch.internal.service.BookService;
 import com.booksearch.mapper.BookClientMapper;
 import com.booksearch.model.BooksInfo;
 import com.booksearch.model.PageInfo;
-import org.springframework.beans.factory.annotation.Value;
+import com.booksearch.util.FileUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
+@RequiredArgsConstructor
 public class BookSearchUseCase {
-    private final String NAVER_CLIENT_ID;
-    private final String NAVER_CLIENT_SECRET;
-    private final String KAKAO_API_KEY;
-    private final BookService bookService;
+    private static final String NAVER_CLIENT_ID = FileUtils.getProperty("naver.book.api.id");
+    private static final String NAVER_CLIENT_SECRET = FileUtils.getProperty("naver.book.api.secret");
+    private static final String KAKAO_API_KEY = FileUtils.getProperty("kakao.book.api");
 
-    public BookSearchUseCase(
-            @Value("${naver.book.api.id}") String NAVER_CLIENT_ID,
-            @Value("${naver.book.api.secret}") String NAVER_CLIENT_SECRET,
-            @Value("${kakao.book.api}") String KAKAO_API_KEY,
-            BookService bookService) {
-        this.NAVER_CLIENT_ID = NAVER_CLIENT_ID;
-        this.NAVER_CLIENT_SECRET = NAVER_CLIENT_SECRET;
-        this.KAKAO_API_KEY = KAKAO_API_KEY;
-        this.bookService = bookService;
-    }
+    private final BookService bookService;
 
     public Mono<NaverResponseDto> findByNaver(BookRequestDto bookSearchRequestDto) {
         WebClient naverRequest = WebClient.builder()
@@ -39,10 +31,10 @@ public class BookSearchUseCase {
                     headers.add("X-Naver-Client-Secret", NAVER_CLIENT_SECRET);
                 })
                 .baseUrl(
-                        "https://openapi.naver.com/v1/search/book.json?query=" +
-                                bookSearchRequestDto.getSearchKeyword() + "&display=" +
-                                bookSearchRequestDto.getPageSize() + "&start=" +
-                                bookSearchRequestDto.getPage()
+                        "https://openapi.naver.com/v1/search/book.json?" +
+                                "query=" + bookSearchRequestDto.getSearchKeyword() +
+                                "&display=" + bookSearchRequestDto.getPageSize() +
+                                "&start=" + bookSearchRequestDto.getPage()
                 )
                 .build();
 
@@ -58,9 +50,9 @@ public class BookSearchUseCase {
                     headers.add("Authorization", "KakaoAK " + KAKAO_API_KEY);
                 })
                 .baseUrl(
-                        "https://dapi.kakao.com/v3/search/book?target=title&query=" +
-                                bookSearchRequestDto.getSearchKeyword() + "&page=" +
-                                bookSearchRequestDto.getPage()
+                        "https://dapi.kakao.com/v3/search/book?target=title&" +
+                                "query=" + bookSearchRequestDto.getSearchKeyword() +
+                                "&page=" + bookSearchRequestDto.getPage()
                 )
                 .build();
 
