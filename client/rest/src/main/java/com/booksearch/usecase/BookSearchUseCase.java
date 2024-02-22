@@ -1,9 +1,6 @@
 package com.booksearch.usecase;
 
-import com.booksearch.dto.BookRequestDto;
-import com.booksearch.dto.BookResponseDto;
-import com.booksearch.dto.BooksInfoResponseDto;
-import com.booksearch.dto.NaverResponseDto;
+import com.booksearch.dto.*;
 import com.booksearch.internal.service.BookService;
 import com.booksearch.mapper.BookClientMapper;
 import com.booksearch.model.BooksInfo;
@@ -13,31 +10,28 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class BookSearchUseCase {
     private final String NAVER_CLIENT_ID;
     private final String NAVER_CLIENT_SECRET;
+    private final String KAKAO_API_KEY;
     private final BookService bookService;
 
     public BookSearchUseCase(
             @Value("${naver.book.api.id}") String NAVER_CLIENT_ID,
             @Value("${naver.book.api.secret}") String NAVER_CLIENT_SECRET,
+            @Value("${kakao.book.api}") String KAKAO_API_KEY,
             BookService bookService) {
         this.NAVER_CLIENT_ID = NAVER_CLIENT_ID;
         this.NAVER_CLIENT_SECRET = NAVER_CLIENT_SECRET;
+        this.KAKAO_API_KEY = KAKAO_API_KEY;
         this.bookService = bookService;
     }
 
-    @Transactional
-    public Mono<NaverResponseDto> getSyncedFromNaver(BookRequestDto bookSearchRequestDto) {
+    public Mono<NaverResponseDto> findByNaver(BookRequestDto bookSearchRequestDto) {
         WebClient naverRequest = WebClient.builder()
                 .defaultHeaders(headers -> {
                     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -55,6 +49,24 @@ public class BookSearchUseCase {
         return naverRequest.get()
                 .retrieve()
                 .bodyToMono(NaverResponseDto.class);
+    }
+
+    public Mono<KakaoResponseDto> findByKakao(BookRequestDto bookSearchRequestDto) {
+        WebClient kakaoRequest = WebClient.builder()
+                .defaultHeaders(headers -> {
+                    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+                    headers.add("Authorization", "KakaoAK " + KAKAO_API_KEY);
+                })
+                .baseUrl(
+                        "https://dapi.kakao.com/v3/search/book?target=title&query=" +
+                                bookSearchRequestDto.getSearchKeyword() + "&page=" +
+                                bookSearchRequestDto.getPage()
+                )
+                .build();
+
+        return kakaoRequest.get()
+                .retrieve()
+                .bodyToMono(KakaoResponseDto.class);
     }
 
     @Transactional(readOnly = true)
