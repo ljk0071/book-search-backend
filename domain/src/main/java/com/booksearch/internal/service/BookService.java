@@ -2,11 +2,9 @@ package com.booksearch.internal.service;
 
 import com.booksearch.internal.repository.BookRepository;
 import com.booksearch.model.Book;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 import com.booksearch.util.StringUtils;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BookService {
     private final BookRepository repository;
@@ -15,29 +13,27 @@ public class BookService {
         this.repository = repository;
     }
 
-    public Book create(String originName) {
-        return repository.create(originName);
-    }
+    public BooksInfo findBooks(PageInfo pageInfo, Book book) {
 
-    public List<Book> findBooks(Book book) {
-
-        List<Book> books = new ArrayList<>();
+        BooksInfo booksInfo = null;
 
         if (StringUtils.hasText(book.getAuthors())) {
-            books = repository.findByAuthors(book.getAuthors());
-        } else if (StringUtils.hasText(book.getContents())) {
-            books = repository.findByContents(book.getContents());
-        } else if (book.getPublishDateTime() != null) {
-            books = repository.findByPublishDateTime(book.getPublishDateTime());
-        } else if (book.getIsbn() != null) {
-            books = repository.findByIsbn(book.getIsbn());
+            booksInfo = repository.findByAuthors(book.getAuthors(), pageInfo);
         }
 
+//        else if (StringUtils.hasText(book.getContents())) {
+//            books = repository.findByContents(book.getContents(), pageInfo);
+//        } else if (book.getPublishDateTime() != null) {
+//            books = repository.findByPublishDateTime(book.getPublishDateTime(), pageInfo);
+//        } else if (book.getIsbn() != null) {
+//            books = repository.findByIsbn(book.getIsbn(), pageInfo);
+//        }
 
-        return books;
+
+        return booksInfo;
     }
 
-    public Book find(Book book) {
-        return repository.find(book);
+    public Book find(Long id) {
+        return repository.find(id);
     }
 }

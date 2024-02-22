@@ -2,13 +2,12 @@ package com.booksearch.mapper;
 
 import com.booksearch.dto.BookRequestDto;
 import com.booksearch.dto.BookResponseDto;
-import com.booksearch.entity.BookEntity;
 import com.booksearch.model.Book;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BookMapper {
+public class BookClientMapper {
 
     public static BookResponseDto toResponse(Book book) {
         return BookResponseDto.builder()
@@ -25,8 +24,6 @@ public class BookMapper {
     public static Book toDomain(BookRequestDto bookSearchRequestDto) {
 
         String searchKeyword = bookSearchRequestDto.getSearchKeyword();
-
-        bookSearchRequestDto.getPage();
 
         String type = bookSearchRequestDto.getSearchType();
 

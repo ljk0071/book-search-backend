@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BookMapper {
+public class BookInfraMapper {
 
     public static BookEntity toEntity(Book book) {
         return BookEntity.builder()
@@ -32,6 +32,7 @@ public class BookMapper {
           thumbnail
          */
         return new Book(
+                bookEntity.getTitle(),
                 bookEntity.getAuthors(),
                 bookEntity.getContents(),
                 bookEntity.getPublishDateTime(),

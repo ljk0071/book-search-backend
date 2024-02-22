@@ -2,9 +2,14 @@ package com.booksearch.repository;
 
 import com.booksearch.entity.BookEntity;
 import com.booksearch.internal.repository.BookRepository;
-import com.booksearch.mapper.BookMapper;
+import com.booksearch.mapper.BookInfraMapper;
 import com.booksearch.model.Book;
+import com.booksearch.model.BooksInfo;
+import com.booksearch.model.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,40 +25,55 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findByAuthors(String authors) {
+    public BooksInfo findByAuthors(String authors, PageInfo pageInfo) {
+        int pageSize = pageInfo.getPageSize();
+        Page<BookEntity> bookEntities = repository.findByAuthors(
+                authors,
+                PageRequest.of(
+                        (pageInfo.getPage() - 1) * pageSize,
+                        pageSize,
+                        Sort.Direction.DESC,
+                        "publishDateTime"
+                )
+        );
+        return new BooksInfo(
+                bookEntities.getTotalPages(),
+                bookEntities.getTotalElements(),
+                bookEntities.getContent().stream()
+                        .map(BookInfraMapper::toDomain)
+                        .toList()
+        );
+    }
+
+    @Override
+    public List<Book> findByContents(String contents, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByContents(String contents) {
+    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime) {
+    public List<Book> findByIsbn(String isbn, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByIsbn(String isbn) {
+    public List<Book> findByPrice(int price, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPrice(int price) {
+    public List<Book> findByPublisher(String publisher, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublisher(String publisher) {
-        return null;
-    }
-
-    @Override
-    public Book find(Book book) {
-        String authors = book.getAuthors();
-        BookEntity bookEntity = repository.findByAuthors(authors).orElseThrow(() -> new IllegalStateException(authors + " doesn't exist"));
-        return BookMapper.toDomain(bookEntity);
+    public Book find(Long id) {
+        BookEntity bookEntity = repository.findById(id).orElseThrow(() -> new IllegalStateException("book doesn't exist"));
+        return BookInfraMapper.toDomain(bookEntity);
     }
 
     //    @Override
