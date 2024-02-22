@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "books")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookEntity extends BaseEntity {
 
     @Id

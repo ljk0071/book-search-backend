@@ -2,7 +2,7 @@ package com.booksearch.repository;
 
 import com.booksearch.entity.BookEntity;
 import com.booksearch.internal.repository.BookRepository;
-import com.booksearch.mapper.BookMapper;
+import com.booksearch.mapper.BookInfraMapper;
 import com.booksearch.model.Book;
 import com.booksearch.model.BooksInfo;
 import com.booksearch.model.PageInfo;
@@ -39,8 +39,8 @@ public class BookRepositoryImpl implements BookRepository {
         return new BooksInfo(
                 bookEntities.getTotalPages(),
                 bookEntities.getTotalElements(),
-                bookEntities.stream()
-                        .map(BookMapper::toDomain)
+                bookEntities.getContent().stream()
+                        .map(BookInfraMapper::toDomain)
                         .toList()
         );
     }
@@ -73,7 +73,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public Book find(Long id) {
         BookEntity bookEntity = repository.findById(id).orElseThrow(() -> new IllegalStateException("book doesn't exist"));
-        return BookMapper.toDomain(bookEntity);
+        return BookInfraMapper.toDomain(bookEntity);
     }
 
     //    @Override
