@@ -5,8 +5,7 @@ server:
 spring:
   config:
     import:
+      - application-jpa-local.yml
       - application-redis.yml
       - logging.yml
       - monitoring.yml
-
-

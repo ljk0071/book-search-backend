@@ -31,22 +31,22 @@ public class LoggerAspect {
 
         if (timeMs > MAX_AFFORDABLE_TIME) {
             log.warn(
-                    "method={}, url={}, call: {} - {} - timeMs : {}",
+                    "method={}, url={}, call: {} - {} - timeMs : {} MS",
                     getMethod(),
                     getRequestURL(),
                     className,
                     methodName,
-                    timeMs / 1000.0 + " MS"
+                    timeMs / 1000.0
             );
             return proceed;
         }
 
-        log.info("method={}, url={}, call: {} - {} - timeMs : {}",
+        log.info("method={}, url={}, call: {} - {} - timeMs : {} MS",
                 getMethod(),
                 getRequestURL(),
                 className,
                 methodName,
-                timeMs / 1000.0 + " MS"
+                timeMs / 1000.0
         );
         return proceed;
     }

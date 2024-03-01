@@ -4,14 +4,19 @@ jar { enabled = true }
 dependencies {
     // Module
     implementation(project(":domain"))
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation("org.postgresql:postgresql:42.7.2")
+
 
     // Spring
     api("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // DB
-    runtimeOnly("com.h2database:h2")
+//    runtimeOnly("com.h2database:h2")
+//    runtimeOnly("org.postgresql:postgresql")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("com.h2database:h2")
+//    testImplementation("com.h2database:h2")
+//    testImplementation("org.postgresql:postgresql")
 }

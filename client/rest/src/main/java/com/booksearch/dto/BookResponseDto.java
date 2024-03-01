@@ -15,7 +15,7 @@ public class BookResponseDto {
 
     private String contents;
 
-    private LocalDateTime publishDateTime;
+    private String publishDateTime;
 
     private String isbn;
 
@@ -26,7 +26,7 @@ public class BookResponseDto {
     private String thumbnail;
 
     @Builder
-    public BookResponseDto(String authors, String contents, LocalDateTime publishDateTime, String isbn, int price, String publisher, String thumbnail) {
+    public BookResponseDto(String authors, String contents, String publishDateTime, String isbn, int price, String publisher, String thumbnail) {
         this.authors = authors;
         this.contents = contents;
         this.publishDateTime = publishDateTime;
