@@ -25,6 +25,34 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
+    public void createBooks(List<Book> books) {
+        repository.saveAll(books.stream()
+                .map(BookInfraMapper::toEntity)
+                .toList());
+    }
+
+    @Override
+    public BooksInfo findByTitleContains(String title, PageInfo pageInfo) {
+        int pageSize = pageInfo.getPageSize();
+        Page<BookEntity> bookEntities = repository.findByTitleContains(
+                title,
+                PageRequest.of(
+                        (pageInfo.getPage() - 1) * pageSize,
+                        pageSize,
+                        Sort.Direction.DESC,
+                        "publishDateTime"
+                )
+        );
+        return new BooksInfo(
+                bookEntities.getTotalPages(),
+                bookEntities.getTotalElements(),
+                bookEntities.getContent().stream()
+                        .map(BookInfraMapper::toDomain)
+                        .toList()
+        );
+    }
+
+    @Override
     public BooksInfo findByAuthors(String authors, PageInfo pageInfo) {
         int pageSize = pageInfo.getPageSize();
         Page<BookEntity> bookEntities = repository.findByAuthors(
@@ -46,27 +74,52 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> findByContents(String contents, PageInfo pageInfo) {
+    public BooksInfo findByAllParams(Book book, PageInfo pageInfo) {
+        int pageSize = pageInfo.getPageSize();
+        Page<BookEntity> bookEntities = repository.findByAllParams(
+                book.getTitle(),
+                book.getAuthors(),
+                book.getContents(),
+                book.getIsbn10(),
+                book.getIsbn13(),
+                book.getPublisher(),
+                PageRequest.of(
+                        (pageInfo.getPage() - 1) * pageSize,
+                        pageSize,
+                        Sort.Direction.DESC,
+                        "publishDateTime"
+                ));
+        return new BooksInfo(
+                bookEntities.getTotalPages(),
+                bookEntities.getTotalElements(),
+                bookEntities.getContent().stream()
+                        .map(BookInfraMapper::toDomain)
+                        .toList()
+        );
+    }
+
+    @Override
+    public BooksInfo findByContents(String contents, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo) {
+    public BooksInfo findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByIsbn(String isbn, PageInfo pageInfo) {
+    public BooksInfo findByIsbn(String isbn, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPrice(int price, PageInfo pageInfo) {
+    public BooksInfo findByPrice(int price, PageInfo pageInfo) {
         return null;
     }
 
     @Override
-    public List<Book> findByPublisher(String publisher, PageInfo pageInfo) {
+    public BooksInfo findByPublisher(String publisher, PageInfo pageInfo) {
         return null;
     }
 

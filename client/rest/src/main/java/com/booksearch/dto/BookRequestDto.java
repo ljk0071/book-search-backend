@@ -14,6 +14,8 @@ public class BookRequestDto extends SearchRequestDto {
 
     private String authors;
 
+    private String title;
+
     private String contents;
 
     private LocalDateTime publishDateTime;

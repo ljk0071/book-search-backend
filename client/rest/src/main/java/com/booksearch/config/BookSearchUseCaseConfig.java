@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 public class BookSearchUseCaseConfig {
 
     @Bean
-    public BookRepository sonakiRepository(BookJpaRepository sonakiJpaRepository) {
-        return new BookRepositoryImpl(sonakiJpaRepository);
+    public BookRepository bookRepository(BookJpaRepository bookJpaRepository) {
+        return new BookRepositoryImpl(bookJpaRepository);
     }
 
     @Bean
-    public BookService sonakiService(BookRepository sonakiRepository) {
-        return new BookService(sonakiRepository);
+    public BookService bookService(BookRepository bookRepository) {
+        return new BookService(bookRepository);
     }
 }

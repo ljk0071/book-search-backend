@@ -11,18 +11,24 @@ public interface BookRepository {
 
     Book create(String originName);
 
+    void createBooks(List<Book> books);
+
     Book find(Long id);
+
+    BooksInfo findByAllParams(Book book, PageInfo pageInfo);
+
+    BooksInfo findByTitleContains(String title, PageInfo pageInfo);
 
     BooksInfo findByAuthors(String authors, PageInfo pageInfo);
 
-    List<Book> findByContents(String contents, PageInfo pageInfo);
+    BooksInfo findByContents(String contents, PageInfo pageInfo);
 
-    List<Book> findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo);
+    BooksInfo findByPublishDateTime(LocalDateTime publishDateTime, PageInfo pageInfo);
 
-    List<Book> findByIsbn(String isbn, PageInfo pageInfo);
+    BooksInfo findByIsbn(String isbn, PageInfo pageInfo);
 
-    List<Book> findByPrice(int price, PageInfo pageInfo);
+    BooksInfo findByPrice(int price, PageInfo pageInfo);
 
-    List<Book> findByPublisher(String publisher, PageInfo pageInfo);
+    BooksInfo findByPublisher(String publisher, PageInfo pageInfo);
 
 }

@@ -10,10 +10,12 @@ public class BookInfraMapper {
 
     public static BookEntity toEntity(Book book) {
         return BookEntity.builder()
+                .title(book.getTitle())
                 .authors(book.getAuthors())
                 .contents(book.getContents())
                 .publishDateTime(book.getPublishDateTime())
-                .isbn(book.getIsbn())
+                .isbn10(book.getIsbn10())
+                .isbn13(book.getIsbn13())
                 .price(book.getPrice())
                 .publisher(book.getPublisher())
                 .thumbnail(book.getThumbnail())
@@ -23,10 +25,12 @@ public class BookInfraMapper {
     public static Book toDomain(BookEntity bookEntity) {
 
         /*
+          title
           authors
           contents
           publishDateTime
-          isbn
+          isbn10
+          isbn13
           price
           publisher
           thumbnail
@@ -36,7 +40,8 @@ public class BookInfraMapper {
                 bookEntity.getAuthors(),
                 bookEntity.getContents(),
                 bookEntity.getPublishDateTime(),
-                bookEntity.getIsbn(),
+                bookEntity.getIsbn10(),
+                bookEntity.getIsbn13(),
                 bookEntity.getPrice(),
                 bookEntity.getPublisher(),
                 bookEntity.getThumbnail()
