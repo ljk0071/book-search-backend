@@ -33,18 +33,19 @@ public class Book {
         } else if ("authors".equals(type)) {
             authors = keyword;
         } else if ("isbn".equals(type)) {
-            isbn10 = keyword;
-            isbn13 = keyword;
+            parsingIsbn(keyword);
         } else if ("publisher".equals(type)) {
             publisher = keyword;
         }
     }
 
+    // for findByAllParams
     public Book(String title, String authors, String contents, String isbn, String publisher) {
         this.title = title;
         this.authors = authors;
         this.contents = contents;
-        parsingIsbn(isbn);
+        this.isbn10 = isbn;
+        this.isbn13 = isbn;
         this.publisher = publisher;
     }
 
@@ -114,18 +115,19 @@ public class Book {
             this.isbn13 = isbn;
         } else if (isbn.length() == 24) {
             String[] isbns = isbn.split(" ");
-            if (isbns[0].length() == 10) {
-                this.isbn10 = isbns[0];
-            } else if (isbns[0].length() == 13) {
-                this.isbn13 = isbns[0];
-            }
-            if (isbns[1].length() == 10) {
-                this.isbn10 = isbns[1];
-            } else if (isbns[1].length() == 13) {
-                this.isbn13 = isbns[1];
+            for (String isbnElements : isbns) {
+                setIsbnByParsing(isbnElements);
             }
         } else {
             this.isbn10 = isbn;
+            this.isbn13 = isbn;
+        }
+    }
+
+    private void setIsbnByParsing(String isbn) {
+        if (isbn.length() == 10) {
+            this.isbn10 = isbn;
+        } else {
             this.isbn13 = isbn;
         }
     }

@@ -2,14 +2,11 @@ package com.booksearch.repository;
 
 import com.booksearch.entity.BookEntity;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
@@ -47,7 +44,17 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
             String publisher,
             Pageable pageable);
 
-    Page<BookEntity> findByAuthors(String originalName, Pageable pageable);
-
     Page<BookEntity> findByTitleContains(String title, Pageable pageable);
+
+    Page<BookEntity> findByAuthorsContains(String originalName, Pageable pageable);
+
+    Page<BookEntity> findByContentsContains(String contents, Pageable pageable);
+
+    Page<BookEntity> findByIsbn10ContainsOrIsbn13(String isbn10, String isbn13, Pageable pageable);
+
+    Page<BookEntity> findByIsbn10Contains(String isbn10, Pageable pageable);
+
+    Page<BookEntity> findByIsbn13Contains(String isbn13, Pageable pageable);
+
+    Page<BookEntity> findByPublisherContains(String publisher, Pageable pageable);
 }
