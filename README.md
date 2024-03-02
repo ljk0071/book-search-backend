@@ -9,7 +9,7 @@
 - #### Architecture : Clean Architecture
 
 - #### Language : Java 21
-- #### Infra : Docker, Redis
+- #### Infra : Docker, Redis, Postgresql
 
 
 ### Docker Compose
