@@ -1,5 +1,7 @@
 package com.booksearch.usecase;
 
+import com.booksearch.exception.KakaoErrorException;
+import com.booksearch.exception.NaverErrorException;
 import com.booksearch.dto.*;
 import com.booksearch.internal.service.BookService;
 import com.booksearch.mapper.BookClientMapper;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -50,11 +51,9 @@ public class BookSearchUseCase {
                         naverRequest.get()
                                 .retrieve()
                                 .bodyToMono(NaverResponseDto.class)
-                                .timeout(Duration.ofSeconds(3))
-                                .onErrorReturn(new NaverResponseDto())
                                 .block()
                 )
-                .orElseGet(NaverResponseDto::new);
+                .orElseThrow(NaverErrorException::new);
 
         List<Book> books = naverBooks.getItems()
                 .stream()
@@ -90,11 +89,9 @@ public class BookSearchUseCase {
                         kakaoRequest.get()
                                 .retrieve()
                                 .bodyToMono(KakaoResponseDto.class)
-                                .timeout(Duration.ofSeconds(3))
-                                .onErrorReturn(new KakaoResponseDto())
                                 .block()
                 )
-                .orElseGet(KakaoResponseDto::new);
+                .orElseThrow(() -> new KakaoErrorException("현재 검색 기능에 문제가 있습니다.\n나중에 다시 찾아주세요."));
 
         List<Book> books = kakaoBooks.getDocuments()
                 .stream()
@@ -123,10 +120,12 @@ public class BookSearchUseCase {
         );
 
         if (booksInfo.getTotalPage() == 0) {
-            log.debug("db is empty, search started in naver");
-            booksInfo = findByNaver(bookSearchRequestDto);
-            if (booksInfo.getTotalPage() == 0) {
-                log.debug("naver is empty, search started in kakao");
+            try {
+                booksInfo = findByNaver(bookSearchRequestDto);
+                if (booksInfo.getTotalPage() == 0) {
+                    booksInfo = findByKakao(bookSearchRequestDto);
+                }
+            } catch (NaverErrorException e) {
                 booksInfo = findByKakao(bookSearchRequestDto);
             }
         }

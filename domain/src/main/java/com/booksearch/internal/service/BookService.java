@@ -23,7 +23,8 @@ public class BookService {
                 StringUtils.hasText(book.getTitle()) &&
                         StringUtils.hasText(book.getContents()) &&
                         StringUtils.hasText(book.getAuthors()) &&
-                        (StringUtils.hasText(book.getIsbn10()) || StringUtils.hasText(book.getIsbn13())) &&
+                        StringUtils.hasText(book.getIsbn10()) &&
+                        StringUtils.hasText(book.getIsbn13()) &&
                         StringUtils.hasText(book.getPublisher())
         ) {
             booksInfo = repository.findByAllParams(book, pageInfo);
@@ -31,12 +32,18 @@ public class BookService {
             booksInfo = repository.findByAuthors(book.getAuthors(), pageInfo);
         } else if (StringUtils.hasText(book.getContents())) {
             booksInfo = repository.findByContents(book.getContents(), pageInfo);
-        } else if (StringUtils.hasText(book.getIsbn10())) {
-            booksInfo = repository.findByIsbn(book.getIsbn10(), pageInfo);
-        } else if (StringUtils.hasText(book.getIsbn13())) {
-            booksInfo = repository.findByIsbn(book.getIsbn13(), pageInfo);
+        } else if (StringUtils.hasText(book.getIsbn10()) || StringUtils.hasText(book.getIsbn13())) {
+            if (StringUtils.hasText(book.getIsbn10()) && StringUtils.hasText(book.getIsbn13())) {
+                booksInfo = repository.findByIsbn(book.getIsbn10(), pageInfo);
+            } else if (StringUtils.hasText(book.getIsbn10())) {
+                booksInfo = repository.findByIsbn10(book.getIsbn10(), pageInfo);
+            } else {
+                booksInfo = repository.findByIsbn13(book.getIsbn13(), pageInfo);
+            }
         } else if (StringUtils.hasText(book.getTitle())) {
-            booksInfo = repository.findByTitleContains(book.getTitle(), pageInfo);
+            booksInfo = repository.findByTitle(book.getTitle(), pageInfo);
+        } else if (StringUtils.hasText(book.getPublisher())) {
+            booksInfo = repository.findByPublisher(book.getTitle(), pageInfo);
         }
 
         return booksInfo;
