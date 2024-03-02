@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,7 +37,7 @@ public class KakaoBook {
     private String url;
 
     public List<String> getAuthors() {
-        return authors;
+        return new ArrayList<>(authors);
     }
 
     public String getContents() {
@@ -76,7 +77,7 @@ public class KakaoBook {
     }
 
     public List<String> getTranslators() {
-        return translators;
+        return new ArrayList<>(translators);
     }
 
     public String getUrl() {

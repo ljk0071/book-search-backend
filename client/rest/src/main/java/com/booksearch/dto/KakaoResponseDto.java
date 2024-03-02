@@ -3,12 +3,29 @@ package com.booksearch.dto;
 import com.booksearch.model.KakaoBook;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class KakaoResponseDto {
 
-    KakaoInfo meta;
+    private KakaoInfo meta = new KakaoInfo();
 
-    List<KakaoBook> documents;
+    private final List<KakaoBook> documents = new ArrayList<>();
+
+    public KakaoResponseDto() {
+    }
+
+    public KakaoResponseDto(boolean isEnd, int pageableCount, int totalCount, List<KakaoBook> documents) {
+        this.meta = new KakaoInfo(
+                isEnd,
+                pageableCount,
+                totalCount
+        );
+        this.documents.addAll(documents);
+    }
+
+    public List<KakaoBook> getDocuments() {
+        return new ArrayList<>(documents);
+    }
 }
