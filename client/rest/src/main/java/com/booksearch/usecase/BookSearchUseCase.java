@@ -3,6 +3,7 @@ package com.booksearch.usecase;
 import com.booksearch.dto.*;
 import com.booksearch.internal.service.BookService;
 import com.booksearch.mapper.BookClientMapper;
+import com.booksearch.model.Book;
 import com.booksearch.model.BooksInfo;
 import com.booksearch.model.PageInfo;
 import com.booksearch.util.FileUtils;
@@ -13,9 +14,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -27,7 +30,7 @@ public class BookSearchUseCase {
 
     private final BookService bookService;
 
-    public Mono<NaverResponseDto> findByNaver(BookRequestDto bookSearchRequestDto) {
+    public BooksInfo findByNaver(BookRequestDto bookSearchRequestDto) {
         WebClient naverRequest = WebClient.builder()
                 .defaultHeaders(headers -> {
                     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -38,16 +41,37 @@ public class BookSearchUseCase {
                         "https://openapi.naver.com/v1/search/book.json?" +
                                 "query=" + bookSearchRequestDto.getSearchKeyword() +
                                 "&display=" + bookSearchRequestDto.getPageSize() +
-                                "&start=" + bookSearchRequestDto.getPage()
+                                "&start=" + bookSearchRequestDto.getPage() +
+                                "&sort=date"
                 )
                 .build();
 
-        return naverRequest.get()
-                .retrieve()
-                .bodyToMono(NaverResponseDto.class);
+        NaverResponseDto naverBooks = Optional.ofNullable(
+                        naverRequest.get()
+                                .retrieve()
+                                .bodyToMono(NaverResponseDto.class)
+                                .timeout(Duration.ofSeconds(3))
+                                .onErrorReturn(new NaverResponseDto())
+                                .block()
+                )
+                .orElseGet(NaverResponseDto::new);
+
+        List<Book> books = naverBooks.getItems()
+                .stream()
+                .map(BookClientMapper::naverToDomain)
+                .toList();
+
+        CompletableFuture.runAsync(() -> bookService.createBooks(books));
+
+        return new BooksInfo(
+                (int) Math.ceil(
+                        (double) naverBooks.getTotal() / naverBooks.getDisplay()),
+                naverBooks.getTotal(),
+                books
+        );
     }
 
-    public Mono<KakaoResponseDto> findByKakao(BookRequestDto bookSearchRequestDto) {
+    public BooksInfo findByKakao(BookRequestDto bookSearchRequestDto) {
         WebClient kakaoRequest = WebClient.builder()
                 .defaultHeaders(headers -> {
                     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
@@ -56,18 +80,40 @@ public class BookSearchUseCase {
                 .baseUrl(
                         "https://dapi.kakao.com/v3/search/book?target=title&" +
                                 "query=" + bookSearchRequestDto.getSearchKeyword() +
-                                "&page=" + bookSearchRequestDto.getPage()
+                                "&page=" + bookSearchRequestDto.getPage() +
+                                "&size=" + bookSearchRequestDto.getPageSize() +
+                                "&sort=latest"
                 )
                 .build();
 
-        return kakaoRequest.get()
-                .retrieve()
-                .bodyToMono(KakaoResponseDto.class);
+        KakaoResponseDto kakaoBooks = Optional.ofNullable(
+                        kakaoRequest.get()
+                                .retrieve()
+                                .bodyToMono(KakaoResponseDto.class)
+                                .timeout(Duration.ofSeconds(3))
+                                .onErrorReturn(new KakaoResponseDto())
+                                .block()
+                )
+                .orElseGet(KakaoResponseDto::new);
+
+        List<Book> books = kakaoBooks.getDocuments()
+                .stream()
+                .map(BookClientMapper::kakaoToDomain)
+                .toList();
+
+        CompletableFuture.runAsync(() -> bookService.createBooks(books));
+
+        return new BooksInfo(
+                kakaoBooks.getMeta().getPageableCount(),
+                kakaoBooks.getMeta().getTotalCount(),
+                books
+        );
     }
 
     @Transactional
     public BooksInfoResponseDto findBooks(BookRequestDto bookSearchRequestDto) {
 
+        // 1 db 검색 -> 없으면 네이버 -> 없으면 카카오
         BooksInfo booksInfo = bookService.findBooks(
                 BookClientMapper.toDomain(bookSearchRequestDto),
                 new PageInfo(
@@ -76,43 +122,20 @@ public class BookSearchUseCase {
                 )
         );
 
-        if (booksInfo.getBooks().isEmpty()) {
-            log.debug("db is empty, start search in naver");
-            NaverResponseDto naverBooks = Optional.ofNullable(findByNaver(bookSearchRequestDto).block())
-                    .orElseThrow(() -> new IllegalStateException("검색기능에 문제가 있습니다.\n다시 시도해주세요."));
-            if (naverBooks.getItems().isEmpty()) {
-                log.debug("naver is empty, start search in kakao");
-                KakaoResponseDto kakaoBooks = Optional.ofNullable(findByKakao(bookSearchRequestDto).block())
-                        .orElseThrow(() -> new IllegalStateException("검색기능에 문제가 있습니다.\n다시 시도해주세요."));
-                bookService.createBooks(kakaoBooks.getDocuments().stream()
-                        .map(BookClientMapper::kakaoToDomain)
-                        .toList());
-                return new BooksInfoResponseDto(
-                        kakaoBooks.getMeta().getPageableCount(),
-                        kakaoBooks.getMeta().getTotalCount(),
-                        kakaoBooks.getDocuments().stream()
-                                .map(BookClientMapper::kakaoToResponse)
-                                .toList()
-                );
-            } else {
-                bookService.createBooks(naverBooks.getItems().stream()
-                        .map(BookClientMapper::naverToDomain)
-                        .toList());
-                return new BooksInfoResponseDto(
-                        (int) Math.ceil(
-                                (double) naverBooks.getTotal() / naverBooks.getDisplay()),
-                        naverBooks.getTotal(),
-                        naverBooks.getItems().stream()
-                                .map(BookClientMapper::naverToResponse)
-                                .toList()
-                );
+        if (booksInfo.getTotalPage() == 0) {
+            log.debug("db is empty, search started in naver");
+            booksInfo = findByNaver(bookSearchRequestDto);
+            if (booksInfo.getTotalPage() == 0) {
+                log.debug("naver is empty, search started in kakao");
+                booksInfo = findByKakao(bookSearchRequestDto);
             }
         }
 
         return new BooksInfoResponseDto(
                 booksInfo.getTotalPage(),
                 booksInfo.getTotalElements(),
-                booksInfo.getBooks().stream()
+                booksInfo.getBooks()
+                        .stream()
                         .map(BookClientMapper::toResponse)
                         .toList()
         );

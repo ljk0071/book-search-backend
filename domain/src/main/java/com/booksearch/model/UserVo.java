@@ -1,10 +1,10 @@
-package com.example.dh.vo;
+package com.booksearch.model;
 
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class UserVo {
-    private String id, pw ,name;
+    private String id, pw, name;
 
     public UserVo(String id, String pw, String name) {
         this.id = id;

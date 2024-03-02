@@ -2,7 +2,6 @@ package com.booksearch.mapper;
 
 import com.booksearch.dto.BookRequestDto;
 import com.booksearch.dto.BookResponseDto;
-import com.booksearch.dto.NaverResponseDto;
 import com.booksearch.model.Book;
 import com.booksearch.model.KakaoBook;
 import com.booksearch.model.NaverBook;
@@ -13,9 +12,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.StringJoiner;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookClientMapper {
@@ -71,10 +68,10 @@ public class BookClientMapper {
     }
 
     public static BookResponseDto toResponse(Book book) {
-        String isbn = "";
-        if (book.getIsbn10() != null && book.getIsbn13() != null) {
-            isbn = StringUtils.joinWithCommas(new ArrayList<>(Arrays.asList(book.getIsbn10(), book.getIsbn13())));
-        } else if (book.getIsbn10() != null) {
+        String isbn;
+        if (StringUtils.hasText(book.getIsbn10()) && StringUtils.hasText(book.getIsbn13())) {
+            isbn = StringUtils.joinWithCommas(Arrays.asList(book.getIsbn10(), book.getIsbn13()));
+        } else if (StringUtils.hasText(book.getIsbn10())) {
             isbn = book.getIsbn10();
         } else {
             isbn = book.getIsbn13();

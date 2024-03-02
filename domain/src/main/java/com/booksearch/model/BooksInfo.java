@@ -1,5 +1,6 @@
 package com.booksearch.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BooksInfo {
@@ -28,6 +29,6 @@ public class BooksInfo {
     }
 
     public List<Book> getBooks() {
-        return books;
+        return new ArrayList<>(books);
     }
 }
