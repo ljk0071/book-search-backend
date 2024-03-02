@@ -31,10 +31,10 @@ public class BookEntity extends BaseEntity {
     @Column(name = "PUBLISH_DATE_TIME")
     private LocalDateTime publishDateTime;
 
-    @Column(name = "ISBN10", length = 10)
+    @Column(name = "ISBN10", length = 10, unique = true)
     private String isbn10;
 
-    @Column(name = "ISBN13", length = 13)
+    @Column(name = "ISBN13", length = 13, unique = true)
     private String isbn13;
 
     @Column(name = "PRICE")
