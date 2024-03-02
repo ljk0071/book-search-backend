@@ -17,7 +17,7 @@ public class BookService {
 
     public BooksInfo findBooks(Book book, PageInfo pageInfo) {
 
-        BooksInfo booksInfo = null;
+        BooksInfo booksInfo = new BooksInfo();
 
         if (
                 StringUtils.hasText(book.getTitle()) &&
