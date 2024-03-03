@@ -33,13 +33,7 @@ public class BookService {
         } else if (StringUtils.hasText(book.getContents())) {
             booksInfo = repository.findByContents(book.getContents(), pageInfo);
         } else if (StringUtils.hasText(book.getIsbn10()) || StringUtils.hasText(book.getIsbn13())) {
-            if (StringUtils.hasText(book.getIsbn10()) && StringUtils.hasText(book.getIsbn13())) {
-                booksInfo = repository.findByIsbn(book.getIsbn10(), pageInfo);
-            } else if (StringUtils.hasText(book.getIsbn10())) {
-                booksInfo = repository.findByIsbn10(book.getIsbn10(), pageInfo);
-            } else {
-                booksInfo = repository.findByIsbn13(book.getIsbn13(), pageInfo);
-            }
+            booksInfo = repository.findByIsbn(book.getIsbn10(), pageInfo);
         } else if (StringUtils.hasText(book.getTitle())) {
             booksInfo = repository.findByTitle(book.getTitle(), pageInfo);
         } else if (StringUtils.hasText(book.getPublisher())) {
@@ -54,6 +48,8 @@ public class BookService {
     }
 
     public void createBooks(List<Book> books) {
-        repository.createBooks(books);
+        books.stream()
+                .filter(v -> !StringUtils.hasText(repository.findByIsbn13(v.getIsbn13()).getIsbn13()))
+                .forEach(repository::createBook);
     }
 }
