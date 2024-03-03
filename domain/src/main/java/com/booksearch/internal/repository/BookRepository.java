@@ -10,6 +10,8 @@ public interface BookRepository {
 
     void createBooks(List<Book> books);
 
+    void createBook(Book books);
+
     Book find(Long id);
 
     BooksInfo findByAllParams(Book book, PageInfo pageInfo);
@@ -22,9 +24,9 @@ public interface BookRepository {
 
     BooksInfo findByIsbn(String isbn, PageInfo pageInfo);
 
-    BooksInfo findByIsbn10(String isbn10, PageInfo pageInfo);
+    Book findByIsbn10(String isbn10);
 
-    BooksInfo findByIsbn13(String isbn13, PageInfo pageInfo);
+    Book findByIsbn13(String isbn13);
 
     BooksInfo findByPublisher(String publisher, PageInfo pageInfo);
 
