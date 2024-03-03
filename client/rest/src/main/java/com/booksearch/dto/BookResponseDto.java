@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookResponseDto {
 
     private String authors;
+
+    private String title;
 
     private String contents;
 
@@ -26,8 +26,9 @@ public class BookResponseDto {
     private String thumbnail;
 
     @Builder
-    public BookResponseDto(String authors, String contents, String publishDateTime, String isbn, int price, String publisher, String thumbnail) {
+    public BookResponseDto(String authors, String title, String contents, String publishDateTime, String isbn, int price, String publisher, String thumbnail) {
         this.authors = authors;
+        this.title = title;
         this.contents = contents;
         this.publishDateTime = publishDateTime;
         this.isbn = isbn;

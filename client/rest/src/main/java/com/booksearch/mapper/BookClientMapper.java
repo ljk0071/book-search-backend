@@ -20,6 +20,7 @@ public class BookClientMapper {
     public static BookResponseDto naverToResponse(NaverBook naverBook) {
         return BookResponseDto.builder()
                 .authors(naverBook.getAuthor())
+                .title(naverBook.getTitle())
                 .contents(naverBook.getDescription())
                 .publishDateTime(DateUtils.convertTillDay(naverBook.getPubdate()))
                 .isbn(naverBook.getIsbn())
@@ -45,6 +46,7 @@ public class BookClientMapper {
     public static BookResponseDto kakaoToResponse(KakaoBook kakaoBook) {
         return BookResponseDto.builder()
                 .authors(StringUtils.joinWithCommas(kakaoBook.getAuthors()))
+                .title(kakaoBook.getTitle())
                 .contents(kakaoBook.getContents())
                 .publishDateTime(DateUtils.convertTillDay(kakaoBook.getDateTime().toLocalDateTime()))
                 .isbn(kakaoBook.getIsbn())
@@ -78,6 +80,7 @@ public class BookClientMapper {
         }
         return BookResponseDto.builder()
                 .authors(book.getAuthors())
+                .title(book.getTitle())
                 .contents(book.getContents())
                 .publishDateTime(DateUtils.convertTillDay(book.getPublishDateTime()))
                 .isbn(isbn)

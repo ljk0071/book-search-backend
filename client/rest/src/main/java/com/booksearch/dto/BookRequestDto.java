@@ -3,7 +3,6 @@ package com.booksearch.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -27,4 +26,8 @@ public class BookRequestDto extends SearchRequestDto {
     private String publisher;
 
     private String thumbnail;
+
+    public BookRequestDto(String searchKeyword, String searchType, int page, int pageSize) {
+        super(searchKeyword, searchType, page, pageSize);
+    }
 }

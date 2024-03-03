@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
 
@@ -52,9 +54,9 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
 
     Page<BookEntity> findByIsbn10ContainsOrIsbn13(String isbn10, String isbn13, Pageable pageable);
 
-    Page<BookEntity> findByIsbn10Contains(String isbn10, Pageable pageable);
+    Optional<BookEntity> findByIsbn10(String isbn10);
 
-    Page<BookEntity> findByIsbn13Contains(String isbn13, Pageable pageable);
+    Optional<BookEntity> findByIsbn13(String isbn13);
 
     Page<BookEntity> findByPublisherContains(String publisher, Pageable pageable);
 }
