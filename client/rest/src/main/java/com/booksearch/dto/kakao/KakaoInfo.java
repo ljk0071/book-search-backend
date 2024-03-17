@@ -1,4 +1,4 @@
-package com.booksearch.dto;
+package com.booksearch.dto.kakao;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

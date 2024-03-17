@@ -1,14 +1,23 @@
 package com.booksearch.exception;
 
-import lombok.extern.slf4j.Slf4j;
+import com.booksearch.status.KakaoStatus;
 
-@Slf4j
+import java.time.LocalDateTime;
+
 public class KakaoErrorException extends RuntimeException {
+
     public KakaoErrorException() {
+        setErrorStatus();
     }
 
     public KakaoErrorException(String message) {
         super(message);
-        log.error(message);
+        setErrorStatus();
     }
+
+    private void setErrorStatus() {
+        KakaoStatus.setStatus(false);
+        KakaoStatus.setErrorAt(LocalDateTime.now());
+    }
+
 }
