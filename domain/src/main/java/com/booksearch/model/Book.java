@@ -1,6 +1,9 @@
 package com.booksearch.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Book {
 
@@ -12,9 +15,7 @@ public class Book {
 
     private LocalDateTime publishDateTime;
 
-    private String isbn10;
-
-    private String isbn13;
+    private final List<String> isbns = new ArrayList<>();
 
     private int price;
 
@@ -25,28 +26,22 @@ public class Book {
     public Book() {
     }
 
-    public Book(String keyword, String type) {
-        if ("title".equals(type)) {
-            title = keyword;
-        } else if ("contents".equals(type)) {
-            contents = keyword;
-        } else if ("authors".equals(type)) {
-            authors = keyword;
-        } else if ("isbn".equals(type)) {
-            parsingIsbn(keyword);
-        } else if ("publisher".equals(type)) {
-            publisher = keyword;
-        }
+    public Book(String keyword) {
+        title = keyword;
+        contents = keyword;
+        authors = keyword;
+        isbns.add(keyword);
+        publisher = keyword;
     }
 
-    // for findByAllParams
-    public Book(String title, String authors, String contents, String isbn, String publisher) {
+    public Book(String title, String authors, String contents, LocalDateTime publishDateTime, int price, String publisher, String thumbnail) {
         this.title = title;
         this.authors = authors;
         this.contents = contents;
-        this.isbn10 = isbn;
-        this.isbn13 = isbn;
+        this.publishDateTime = publishDateTime;
+        this.price = price;
         this.publisher = publisher;
+        this.thumbnail = thumbnail;
     }
 
     public Book(String title, String authors, String contents, LocalDateTime publishDateTime, String isbn, int price, String publisher, String thumbnail) {
@@ -54,19 +49,7 @@ public class Book {
         this.authors = authors;
         this.contents = contents;
         this.publishDateTime = publishDateTime;
-        parsingIsbn(isbn);
-        this.price = price;
-        this.publisher = publisher;
-        this.thumbnail = thumbnail;
-    }
-
-    public Book(String title, String authors, String contents, LocalDateTime publishDateTime, String isbn10, String isbn13, int price, String publisher, String thumbnail) {
-        this.title = title;
-        this.authors = authors;
-        this.contents = contents;
-        this.publishDateTime = publishDateTime;
-        this.isbn10 = isbn10;
-        this.isbn13 = isbn13;
+        parsingIsbn(isbn.trim());
         this.price = price;
         this.publisher = publisher;
         this.thumbnail = thumbnail;
@@ -88,12 +71,8 @@ public class Book {
         return publishDateTime;
     }
 
-    public String getIsbn10() {
-        return isbn10;
-    }
-
-    public String getIsbn13() {
-        return isbn13;
+    public List<String> getIsbns() {
+        return new ArrayList<>(isbns);
     }
 
     public int getPrice() {
@@ -109,26 +88,10 @@ public class Book {
     }
 
     private void parsingIsbn(String isbn) {
-        if (isbn.length() == 10) {
-            this.isbn10 = isbn;
-        } else if (isbn.length() == 13) {
-            this.isbn13 = isbn;
-        } else if (isbn.length() == 24) {
-            String[] isbns = isbn.split(" ");
-            for (String isbnElements : isbns) {
-                setIsbnByParsing(isbnElements);
-            }
-        } else {
-            this.isbn10 = isbn;
-            this.isbn13 = isbn;
-        }
-    }
-
-    private void setIsbnByParsing(String isbn) {
-        if (isbn.length() == 10) {
-            this.isbn10 = isbn;
-        } else {
-            this.isbn13 = isbn;
+        if (isbn.length() == 10 || isbn.length() == 13) {
+            this.isbns.add(isbn);
+        } else if (isbn.length() == 24 || isbn.length() == 27) {
+            this.isbns.addAll(Arrays.asList(isbn.split(" ")));
         }
     }
 }

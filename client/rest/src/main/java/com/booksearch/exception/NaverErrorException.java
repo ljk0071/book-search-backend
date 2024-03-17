@@ -1,20 +1,23 @@
 package com.booksearch.exception;
 
 import com.booksearch.status.NaverStatus;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 public class NaverErrorException extends RuntimeException {
 
     public NaverErrorException() {
+        setErrorStatus();
     }
 
-    public NaverErrorException(String message, NaverStatus naverStatus) {
+    public NaverErrorException(String message) {
         super(message);
-        log.error(message);
-        naverStatus.setNaverOk(false);
-        naverStatus.setNaverErrorAt(LocalDateTime.now());
+        setErrorStatus();
     }
+
+    private void setErrorStatus() {
+        NaverStatus.setStatus(false);
+        NaverStatus.setErrorAt(LocalDateTime.now());
+    }
+
 }

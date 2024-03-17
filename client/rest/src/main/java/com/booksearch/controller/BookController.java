@@ -1,13 +1,12 @@
 package com.booksearch.controller;
 
-import com.booksearch.dto.BookRequestDto;
-import com.booksearch.dto.BooksInfoResponseDto;
+import com.booksearch.dto.local.BookResponseDto;
+import com.booksearch.dto.local.BooksInfoResponseDto;
+import com.booksearch.dto.common.KeywordSearchRequestDto;
 import com.booksearch.dto.util.ApiResponse;
 import com.booksearch.usecase.BookSearchUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -18,8 +17,14 @@ public class BookController {
     private final BookSearchUseCase bookSearchUseCase;
 
     @GetMapping
-    public ApiResponse<BooksInfoResponseDto> findBooks(BookRequestDto bookRequestDto) {
+    public ApiResponse<BooksInfoResponseDto> findBooks(KeywordSearchRequestDto keywordSearchRequestDto) {
 
-        return ApiResponse.ok(bookSearchUseCase.findBooks(bookRequestDto));
+        return ApiResponse.ok(bookSearchUseCase.findBooks(keywordSearchRequestDto));
+    }
+
+    @GetMapping("/{isbn}")
+    public ApiResponse<BookResponseDto> find(@PathVariable String isbn) {
+
+        return ApiResponse.ok(bookSearchUseCase.find(isbn));
     }
 }

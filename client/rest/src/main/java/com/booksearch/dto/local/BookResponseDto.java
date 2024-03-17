@@ -1,4 +1,4 @@
-package com.booksearch.dto;
+package com.booksearch.dto.local;
 
 import lombok.AccessLevel;
 import lombok.Builder;

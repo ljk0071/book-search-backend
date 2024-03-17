@@ -1,7 +1,8 @@
 package com.booksearch.mapper;
 
-import com.booksearch.dto.BookRequestDto;
-import com.booksearch.dto.BookResponseDto;
+import com.booksearch.dto.local.BookResponseDto;
+import com.booksearch.dto.common.KeywordSearchRequestDto;
+import com.booksearch.dto.naver.NaverXmlBook.Channel.Item;
 import com.booksearch.model.Book;
 import com.booksearch.model.KakaoBook;
 import com.booksearch.model.NaverBook;
@@ -12,22 +13,21 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookClientMapper {
 
-    public static BookResponseDto naverToResponse(NaverBook naverBook) {
-        return BookResponseDto.builder()
-                .authors(naverBook.getAuthor())
-                .title(naverBook.getTitle())
-                .contents(naverBook.getDescription())
-                .publishDateTime(DateUtils.convertTillDay(naverBook.getPubdate()))
-                .isbn(naverBook.getIsbn())
-                .price(naverBook.getDiscount())
-                .publisher(naverBook.getPublisher())
-                .thumbnail(naverBook.getImage())
-                .build();
+    public static Book naverXmlToDomain(Item item) {
+        return new Book(
+                item.getTitle(),
+                item.getAuthor(),
+                item.getDescription(),
+                LocalDateTime.of(item.getPubdate(), LocalTime.MIN),
+                item.getIsbn(),
+                item.getDiscount(),
+                item.getPublisher(),
+                item.getImage()
+        );
     }
 
     public static Book naverToDomain(NaverBook naverBook) {
@@ -61,7 +61,7 @@ public class BookClientMapper {
                 kakaoBook.getTitle(),
                 StringUtils.joinWithCommas(kakaoBook.getAuthors()),
                 kakaoBook.getContents(),
-                kakaoBook.getDateTime().toLocalDateTime(),
+                kakaoBook.getDateTime() == null ? null : kakaoBook.getDateTime().toLocalDateTime(),
                 kakaoBook.getIsbn(),
                 kakaoBook.getPrice(),
                 kakaoBook.getPublisher(),
@@ -70,42 +70,27 @@ public class BookClientMapper {
     }
 
     public static BookResponseDto toResponse(Book book) {
-        String isbn;
-        if (StringUtils.hasText(book.getIsbn10()) && StringUtils.hasText(book.getIsbn13())) {
-            isbn = StringUtils.joinWithCommas(Arrays.asList(book.getIsbn10(), book.getIsbn13()));
-        } else if (StringUtils.hasText(book.getIsbn10())) {
-            isbn = book.getIsbn10();
-        } else {
-            isbn = book.getIsbn13();
+
+        if (book == null) {
+            return null;
         }
+
+        String publishDateTime = book.getPublishDateTime() != null ? DateUtils.convertTillDay(book.getPublishDateTime()) : "정보 없음";
+
         return BookResponseDto.builder()
                 .authors(book.getAuthors())
                 .title(book.getTitle())
                 .contents(book.getContents())
-                .publishDateTime(DateUtils.convertTillDay(book.getPublishDateTime()))
-                .isbn(isbn)
+                .publishDateTime(publishDateTime)
+                .isbn(StringUtils.joinWithCommas(book.getIsbns()))
                 .price(book.getPrice())
                 .publisher(book.getPublisher())
                 .thumbnail(book.getThumbnail())
                 .build();
     }
 
-    public static Book toDomain(BookRequestDto bookSearchRequestDto) {
+    public static Book toDomain(KeywordSearchRequestDto keywordSearchRequestDto) {
 
-        String searchKeyword = bookSearchRequestDto.getSearchKeyword();
-
-        String type = bookSearchRequestDto.getSearchType();
-
-        if ("ALL".equals(type)) {
-            return new Book(
-                    searchKeyword,
-                    searchKeyword,
-                    searchKeyword,
-                    searchKeyword,
-                    searchKeyword
-            );
-        } else {
-            return new Book(searchKeyword, type);
-        }
+        return new Book(keywordSearchRequestDto.getSearchKeyword());
     }
 }

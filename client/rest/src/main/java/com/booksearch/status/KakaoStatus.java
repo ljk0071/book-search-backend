@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class NaverStatus {
-    private static boolean status = true;
+public class KakaoStatus {
+    private static boolean status = false;
     private static LocalDateTime errorAt;
 
     public static boolean isStatus() {
@@ -15,7 +15,7 @@ public class NaverStatus {
     }
 
     public static void setStatus(boolean status) {
-        NaverStatus.status = status;
+        KakaoStatus.status = status;
     }
 
     public static LocalDateTime getErrorAt() {
@@ -23,6 +23,6 @@ public class NaverStatus {
     }
 
     public static void setErrorAt(LocalDateTime errorAt) {
-        NaverStatus.errorAt = errorAt;
+        KakaoStatus.errorAt = errorAt;
     }
 }

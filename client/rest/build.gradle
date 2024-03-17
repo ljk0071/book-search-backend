@@ -17,10 +17,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.boot:spring-boot-starter-web")
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
-    implementation ("org.springframework:spring-webflux:6.1.4")
+    implementation ("org.springframework:spring-webflux")
+    // https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+    implementation ("jakarta.xml.bind:jakarta.xml.bind-api")
 
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+
+
+//    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
