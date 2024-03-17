@@ -12,6 +12,8 @@ public interface BookRepository {
 
     void createBook(Book books);
 
+    void bulkInsert(List<Book> books);
+
     Book find(Long id);
 
     BooksInfo findByAllParams(Book book, PageInfo pageInfo);
@@ -22,12 +24,9 @@ public interface BookRepository {
 
     BooksInfo findByContents(String contents, PageInfo pageInfo);
 
-    BooksInfo findByIsbn(String isbn, PageInfo pageInfo);
-
-    Book findByIsbn10(String isbn10);
-
-    Book findByIsbn13(String isbn13);
-
     BooksInfo findByPublisher(String publisher, PageInfo pageInfo);
 
+    Book findByIsbn(String isbn);
+
+    boolean checkDuplication(String isbn);
 }

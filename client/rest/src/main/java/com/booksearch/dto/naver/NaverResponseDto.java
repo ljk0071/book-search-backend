@@ -1,4 +1,4 @@
-package com.booksearch.dto;
+package com.booksearch.dto.naver;
 
 import com.booksearch.model.NaverBook;
 import lombok.Getter;

@@ -6,6 +6,7 @@ import com.booksearch.model.BooksInfo;
 import com.booksearch.model.PageInfo;
 import com.booksearch.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookService {
@@ -23,8 +24,7 @@ public class BookService {
                 StringUtils.hasText(book.getTitle()) &&
                         StringUtils.hasText(book.getContents()) &&
                         StringUtils.hasText(book.getAuthors()) &&
-                        StringUtils.hasText(book.getIsbn10()) &&
-                        StringUtils.hasText(book.getIsbn13()) &&
+                        !book.getIsbns().isEmpty() &&
                         StringUtils.hasText(book.getPublisher())
         ) {
             booksInfo = repository.findByAllParams(book, pageInfo);
@@ -32,8 +32,10 @@ public class BookService {
             booksInfo = repository.findByAuthors(book.getAuthors(), pageInfo);
         } else if (StringUtils.hasText(book.getContents())) {
             booksInfo = repository.findByContents(book.getContents(), pageInfo);
-        } else if (StringUtils.hasText(book.getIsbn10()) || StringUtils.hasText(book.getIsbn13())) {
-            booksInfo = repository.findByIsbn(book.getIsbn10(), pageInfo);
+        } else if (!book.getIsbns().isEmpty()) {
+            List<Book> books = new ArrayList<>();
+            book.getIsbns().forEach(isbn -> books.add(repository.findByIsbn(isbn)));
+            booksInfo = new BooksInfo(1, books.size(), books);
         } else if (StringUtils.hasText(book.getTitle())) {
             booksInfo = repository.findByTitle(book.getTitle(), pageInfo);
         } else if (StringUtils.hasText(book.getPublisher())) {
@@ -43,13 +45,16 @@ public class BookService {
         return booksInfo;
     }
 
-    public Book find(Long id) {
-        return repository.find(id);
+    public Book find(String isbn) {
+        return repository.findByIsbn(isbn);
     }
 
-    public void createBooks(List<Book> books) {
-        books.stream()
-                .filter(v -> !StringUtils.hasText(repository.findByIsbn13(v.getIsbn13()).getIsbn13()))
-                .forEach(repository::createBook);
+    public boolean checkDuplication(String isbn) {
+
+        return repository.checkDuplication(isbn);
+    }
+
+    public void backup(List<Book> books) {
+        repository.bulkInsert(books);
     }
 }
