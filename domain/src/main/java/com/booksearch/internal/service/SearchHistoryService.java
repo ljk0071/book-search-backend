@@ -16,7 +16,7 @@ public class SearchHistoryService {
         repository.createBackupHistory(searchHistory);
     }
 
-    public boolean checkSearched(SearchHistory searchHistory) {
-        return repository.checkSearched(searchHistory);
+    public SearchHistory findSearchedHistory(SearchHistory searchHistory) {
+        return repository.findByKeywordAndSource(searchHistory);
     }
 }

@@ -42,6 +42,9 @@ public class NaverSearchModuleImpl implements SearchModule {
             )
             .build();
 
+    public NaverSearchModuleImpl() {
+    }
+
     @Override
     public Book findBook(String isbn) {
 

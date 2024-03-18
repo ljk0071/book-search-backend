@@ -1,14 +1,13 @@
 package com.booksearch.status;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NaverStatus {
     private static boolean status = true;
     private static LocalDateTime errorAt;
+
+    private NaverStatus() {
+    }
 
     public static boolean isStatus() {
         return status;

@@ -1,19 +1,21 @@
 package com.booksearch.usecase;
 
+import com.booksearch.dto.common.KeywordSearchRequestDto;
 import com.booksearch.dto.local.BookResponseDto;
 import com.booksearch.dto.local.BooksInfoResponseDto;
-import com.booksearch.dto.common.KeywordSearchRequestDto;
 import com.booksearch.exception.KakaoErrorException;
 import com.booksearch.exception.NaverErrorException;
+import com.booksearch.factory.SearchModuleFactory;
 import com.booksearch.internal.service.BookService;
 import com.booksearch.internal.service.SearchHistoryService;
 import com.booksearch.mapper.BookClientMapper;
 import com.booksearch.model.Book;
 import com.booksearch.model.BooksInfo;
 import com.booksearch.model.SearchHistory;
-import com.booksearch.status.KakaoStatus;
-import com.booksearch.status.NaverStatus;
-import com.booksearch.factory.SearchModuleFactory;
+import com.booksearch.module.search.KakaoSearchModuleImpl;
+import com.booksearch.module.search.RepositorySearchModuleImpl;
+import com.booksearch.module.search.SearchModule;
+import com.booksearch.util.AsyncUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -49,66 +50,45 @@ public class BookSearchUseCase {
 
         long totalElements = booksInfo.getTotalElements();
 
-        boolean isKakaoOk = KakaoStatus.isStatus();
-        boolean isNaverOk = NaverStatus.isStatus();
-
-        String source = isKakaoOk ? "kakao" : "naver";
-
         String keyword = keywordSearchRequestDto.getSearchKeyword();
 
-        if (checkSearched(isKakaoOk, isNaverOk, keyword, source)) {
+        SearchModule searchModule = searchModuleFactory.getNormalStatusModule();
 
-            CompletableFuture.runAsync(() -> {
+        if (!checkSearched(searchModule, keyword, totalElements)) {
 
-                                searchHistoryService.createBackupHistory(
-                                        new SearchHistory(
-                                                keyword,
-                                                totalElements,
-                                                source
-                                        )
-                                );
-                                /*
-                                  키워드 당 최대 호출 갯수 1000
+            AsyncUtils.runAsync(() -> {
+                        /*
+                          키워드 당 최대 호출 갯수 1000
 
-                                  저장 중에 error 발생 case -> table에 담아둔 뒤 나중에 batch로 재작업
-                                 */
-                                List<Book> backupBooks = new ArrayList<>();
-                                double maxSave = totalElements > MAX_SAVE_VALUE ? MAX_SAVE_VALUE : totalElements;
-                                int pageSize;
-                                int totalPage;
-                                int lastRequestSize;
+                          저장 중에 error 발생 case -> table에 담아둔 뒤 나중에 batch로 재작업
+                         */
+                        List<Book> backupBooks = new ArrayList<>();
+                        double maxSave = totalElements > MAX_SAVE_VALUE ? MAX_SAVE_VALUE : totalElements;
+                        int pageSize;
+                        int totalPage;
+                        int lastRequestSize;
 
-                                if (isKakaoOk) {
-                                    pageSize = 50;
-                                    totalPage = (int) Math.ceil(maxSave / pageSize);
-                                    for (int i = 1; i <= totalPage; i++) {
-                                        backupBooks.addAll(getBooks(keyword, i, pageSize));
-                                    }
-                                } else {
-                                    pageSize = 100;
-                                    lastRequestSize = (int) totalElements % pageSize;
-                                    totalPage = (int) Math.ceil(maxSave / pageSize);
-                                    for (int i = 1; i <= totalPage; i++) {
-                                        if (i == totalPage) {
-                                            pageSize = lastRequestSize;
-                                        }
-                                        backupBooks.addAll(getBooks(keyword, (i - 1) * pageSize, pageSize));
-                                    }
-                                }
-
-
-                                backup(backupBooks);
+                        if (searchModule instanceof KakaoSearchModuleImpl) {
+                            pageSize = 50;
+                            totalPage = (int) Math.ceil(maxSave / pageSize);
+                            for (int i = 1; i <= totalPage; i++) {
+                                backupBooks.addAll(getBooks(keyword, i, pageSize));
                             }
-                    )
-                    .handle((result, exception) -> {
-                        if (exception != null) {
-                            log.error("error when backup book", exception);
-                            // TODO 백업 배치 등록하는 프로세스 추가
-                            return null;
+                        } else {
+                            pageSize = 100;
+                            lastRequestSize = (int) totalElements % pageSize;
+                            totalPage = (int) Math.ceil(maxSave / pageSize);
+                            for (int i = 1; i <= totalPage; i++) {
+                                if (i == totalPage) {
+                                    pageSize = lastRequestSize;
+                                }
+                                backupBooks.addAll(getBooks(keyword, (i - 1) * pageSize, pageSize));
+                            }
                         }
-                        return result;
-                    });
 
+                        backup(backupBooks);
+                    }
+            );
         }
 
         return new BooksInfoResponseDto(
@@ -130,12 +110,28 @@ public class BookSearchUseCase {
         if (!books.isEmpty()) {
             bookService.backup(books);
         }
-
     }
 
-    private boolean checkSearched(boolean isKakaoOk, boolean isNaverOk, String keyword, String source) {
-        return (isKakaoOk || isNaverOk) &&
-                !searchHistoryService.checkSearched(new SearchHistory(keyword, source));
+    private boolean checkSearched(SearchModule searchModule, String keyword, long totalElements) {
+
+        boolean isSearched = false;
+
+        if (!(searchModule instanceof RepositorySearchModuleImpl)) {
+            String source = searchModule instanceof KakaoSearchModuleImpl ? "kakao" : "naver";
+            SearchHistory history = searchHistoryService.findSearchedHistory(new SearchHistory(keyword, source));
+
+            AsyncUtils.runAsync(() -> searchHistoryService.createBackupHistory(
+                    new SearchHistory(
+                            keyword,
+                            totalElements,
+                            source
+                    )
+            ));
+
+            isSearched = history.getSavedBooks() > totalElements;
+        }
+
+        return isSearched;
     }
 
     private List<Book> getBooks(String keyword, int page, int pageSize) {
