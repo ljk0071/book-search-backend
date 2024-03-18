@@ -1,14 +1,13 @@
 package com.booksearch.status;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class KakaoStatus {
-    private static boolean status = false;
+    private static boolean status = true;
     private static LocalDateTime errorAt;
+
+    private KakaoStatus() {
+    }
 
     public static boolean isStatus() {
         return status;

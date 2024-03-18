@@ -7,6 +7,4 @@ public interface SearchHistoryRepository {
     void createBackupHistory(SearchHistory searchHistory);
 
     SearchHistory findByKeywordAndSource(SearchHistory searchHistory);
-
-    boolean checkSearched(SearchHistory searchHistory);
 }

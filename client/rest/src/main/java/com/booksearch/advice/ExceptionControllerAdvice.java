@@ -3,20 +3,22 @@ package com.booksearch.advice;
 import com.booksearch.dto.util.ApiResponse;
 import com.booksearch.exception.NoMatchedBookException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
 
     @ExceptionHandler(IllegalStateException.class)
-    public ApiResponse<String> illegalStateException(IllegalStateException exception) {
-        return ApiResponse.fail(exception.getMessage());
+    public ApiResponse<CustomMessage> illegalStateException(IllegalStateException exception) {
+        return ApiResponse.fail(new CustomMessage(exception.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ApiResponse<String> illegalArgumentException(IllegalArgumentException exception) {
-        return ApiResponse.fail(exception.getMessage());
+    public ApiResponse<CustomMessage> illegalArgumentException(IllegalArgumentException exception) {
+        return ApiResponse.fail(new CustomMessage(exception.getMessage()));
     }
 
     @ExceptionHandler(NoMatchedBookException.class)
