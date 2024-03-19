@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 public class BookInfraMapper {
 
     public static BookEntity toEntity(Book book) {
+
         return BookEntity.builder()
                 .title(book.getTitle())
                 .authors(book.getAuthors())
                 .contents(book.getContents())
                 .publishDateTime(book.getPublishDateTime())
-                .isbn10(book.getIsbn10())
-                .isbn13(book.getIsbn13())
+                .isbns(book.getIsbns())
                 .price(book.getPrice())
                 .publisher(book.getPublisher())
                 .thumbnail(book.getThumbnail())
@@ -35,13 +35,16 @@ public class BookInfraMapper {
           publisher
           thumbnail
          */
+        StringBuilder sb = new StringBuilder();
+
+        bookEntity.getIsbns().forEach(sb::append);
+
         return new Book(
                 bookEntity.getTitle(),
                 bookEntity.getAuthors(),
                 bookEntity.getContents(),
                 bookEntity.getPublishDateTime(),
-                bookEntity.getIsbn10(),
-                bookEntity.getIsbn13(),
+                sb.toString(),
                 bookEntity.getPrice(),
                 bookEntity.getPublisher(),
                 bookEntity.getThumbnail()
