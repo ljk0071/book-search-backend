@@ -19,8 +19,6 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
             "authors," +
             "contents," +
             "publishDateTime," +
-            "isbn10," +
-            "isbn13," +
             "price," +
             "publisher," +
             "thumbnail) " +
@@ -28,8 +26,6 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
             "WHERE title like %:title% " +
             "OR authors like %:authors% " +
             "or contents like %:contents% " +
-            "or isbn10 like %:isbn10% " +
-            "or isbn13 like %:isbn13% " +
             "or publisher like %:publisher% ")
     Page<BookEntity> findByAllParams(
             @Param("title")
@@ -38,10 +34,6 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
             String authors,
             @Param("contents")
             String contents,
-            @Param("isbn10")
-            String isbn10,
-            @Param("isbn13")
-            String isbn13,
             @Param("publisher")
             String publisher,
             Pageable pageable);
@@ -52,11 +44,11 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, Long> {
 
     Page<BookEntity> findByContentsContains(String contents, Pageable pageable);
 
-    Page<BookEntity> findByIsbn10ContainsOrIsbn13(String isbn10, String isbn13, Pageable pageable);
-
-    Optional<BookEntity> findByIsbn10(String isbn10);
-
-    Optional<BookEntity> findByIsbn13(String isbn13);
+//    Page<BookEntity> findByIsbnContains(String isbn10, Pageable pageable);
+//
+//    Optional<BookEntity> findByIsbn(IsbnEntity isbn);
 
     Page<BookEntity> findByPublisherContains(String publisher, Pageable pageable);
+
+    Optional<BookEntity> findByIsbns(String isbn);
 }

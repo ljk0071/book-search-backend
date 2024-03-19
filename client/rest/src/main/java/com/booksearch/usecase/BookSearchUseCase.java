@@ -54,7 +54,8 @@ public class BookSearchUseCase {
 
         SearchModule searchModule = searchModuleFactory.getNormalStatusModule();
 
-        if (!checkSearched(searchModule, keyword, totalElements)) {
+//        if (!checkSearched(searchModule, keyword, totalElements)) {
+        if (true) {
 
             AsyncUtils.runAsync(() -> {
                         /*
@@ -86,7 +87,15 @@ public class BookSearchUseCase {
                             }
                         }
 
-                        backup(backupBooks);
+                        backup(backupBooks.stream()
+                                .filter(book -> book.getIsbns()
+                                        .stream()
+                                        .noneMatch(isbn -> backupBooks.stream()
+                                                .anyMatch(backupBook -> (!backupBook.getPublishDateTime().equals(book.getPublishDateTime())
+                                                        || !backupBook.getPublisher().equals(book.getPublisher())
+                                                        || !backupBook.getAuthors().equals(book.getAuthors()))
+                                                        && backupBook.getIsbns().contains(isbn))))
+                                .toList());
                     }
             );
         }

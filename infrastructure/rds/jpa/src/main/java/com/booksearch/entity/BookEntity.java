@@ -4,14 +4,14 @@ import com.booksearch.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 @Table(name = "books")
-@NoArgsConstructor
 public class BookEntity extends BaseEntity {
 
     @Id
@@ -30,11 +30,14 @@ public class BookEntity extends BaseEntity {
     @Column(name = "PUBLISH_DATE_TIME")
     private LocalDateTime publishDateTime;
 
-    @Column(name = "ISBN10", length = 10)
-    private String isbn10;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @PrimaryKeyJoinColumn
+//    private List<IsbnEntity> isbns = new ArrayList<>();
 
-    @Column(name = "ISBN13", length = 13)
-    private String isbn13;
+    @ElementCollection
+    @CollectionTable(name = "isbns", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "isbn")
+    private final List<String> isbns = new ArrayList<>();
 
     @Column(name = "PRICE")
     private int price;
@@ -45,17 +48,45 @@ public class BookEntity extends BaseEntity {
     @Column(name = "THUMBNAIL", length = 300)
     private String thumbnail;
 
-    @Builder
-    public BookEntity(Long id, String title, String authors, String contents, LocalDateTime publishDateTime, String isbn10, String isbn13, int price, String publisher, String thumbnail) {
+    public BookEntity(Long id, String title, String authors, String contents, LocalDateTime publishDateTime, int price, String publisher, String thumbnail) {
+        super(null);
         this.id = id;
         this.title = title;
         this.authors = authors;
         this.contents = contents;
         this.publishDateTime = publishDateTime;
-        this.isbn10 = isbn10;
-        this.isbn13 = isbn13;
         this.price = price;
         this.publisher = publisher;
         this.thumbnail = thumbnail;
+    }
+
+    public BookEntity(LocalDateTime updateAt, Long id, String title, String authors, String contents, LocalDateTime publishDateTime, int price, String publisher, String thumbnail) {
+        super(updateAt);
+        this.id = id;
+        this.title = title;
+        this.authors = authors;
+        this.contents = contents;
+        this.publishDateTime = publishDateTime;
+        this.price = price;
+        this.publisher = publisher;
+        this.thumbnail = thumbnail;
+    }
+
+    @Builder
+    public BookEntity(LocalDateTime updateAt, Long id, String title, String authors, String contents, LocalDateTime publishDateTime, List<String> isbns, int price, String publisher, String thumbnail) {
+        super(updateAt);
+        this.id = id;
+        this.title = title;
+        this.authors = authors;
+        this.contents = contents;
+        this.publishDateTime = publishDateTime;
+        this.isbns.addAll(isbns);
+        this.price = price;
+        this.publisher = publisher;
+        this.thumbnail = thumbnail;
+    }
+
+    public BookEntity() {
+        super(null);
     }
 }
