@@ -1,4 +1,4 @@
-package com.booksearch.dto.kakao;
+package com.booksearch.dto.book.kakao;
 
 import com.booksearch.model.KakaoBook;
 import lombok.Getter;

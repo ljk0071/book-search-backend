@@ -1,4 +1,4 @@
-package com.booksearch.repository;
+package com.booksearch.repository.search;
 
 import com.booksearch.entity.SearchHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

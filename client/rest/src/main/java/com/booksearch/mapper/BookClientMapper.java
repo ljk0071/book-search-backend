@@ -1,8 +1,8 @@
 package com.booksearch.mapper;
 
-import com.booksearch.dto.local.BookResponseDto;
+import com.booksearch.dto.book.local.BookResponseDto;
 import com.booksearch.dto.common.KeywordSearchRequestDto;
-import com.booksearch.dto.naver.NaverXmlBook.Channel.Item;
+import com.booksearch.dto.book.naver.NaverXmlBook.Channel.Item;
 import com.booksearch.model.Book;
 import com.booksearch.model.KakaoBook;
 import com.booksearch.model.NaverBook;

@@ -1,4 +1,4 @@
-package com.booksearch.dto.naver;
+package com.booksearch.dto.book.naver;
 
 import com.booksearch.deserializer.xml.LocalDateAdapter;
 import jakarta.xml.bind.annotation.*;
