@@ -1,7 +1,7 @@
 package com.booksearch.controller;
 
-import com.booksearch.dto.local.BookResponseDto;
-import com.booksearch.dto.local.BooksInfoResponseDto;
+import com.booksearch.dto.book.local.BookResponseDto;
+import com.booksearch.dto.book.local.BooksInfoResponseDto;
 import com.booksearch.dto.common.KeywordSearchRequestDto;
 import com.booksearch.dto.util.ApiResponse;
 import com.booksearch.usecase.BookSearchUseCase;

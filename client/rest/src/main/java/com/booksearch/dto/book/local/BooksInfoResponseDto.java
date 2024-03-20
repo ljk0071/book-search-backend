@@ -1,4 +1,4 @@
-package com.booksearch.dto.local;
+package com.booksearch.dto.book.local;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

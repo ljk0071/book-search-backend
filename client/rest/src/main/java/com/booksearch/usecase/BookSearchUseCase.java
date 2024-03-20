@@ -1,8 +1,8 @@
 package com.booksearch.usecase;
 
+import com.booksearch.dto.book.local.BookResponseDto;
+import com.booksearch.dto.book.local.BooksInfoResponseDto;
 import com.booksearch.dto.common.KeywordSearchRequestDto;
-import com.booksearch.dto.local.BookResponseDto;
-import com.booksearch.dto.local.BooksInfoResponseDto;
 import com.booksearch.exception.KakaoErrorException;
 import com.booksearch.exception.NaverErrorException;
 import com.booksearch.factory.SearchModuleFactory;
@@ -54,8 +54,7 @@ public class BookSearchUseCase {
 
         SearchModule searchModule = searchModuleFactory.getNormalStatusModule();
 
-//        if (!checkSearched(searchModule, keyword, totalElements)) {
-        if (true) {
+        if (!checkSearched(searchModule, keyword, totalElements)) {
 
             AsyncUtils.runAsync(() -> {
                         /*

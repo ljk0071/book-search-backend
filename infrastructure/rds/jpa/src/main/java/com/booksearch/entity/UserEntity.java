@@ -32,4 +32,13 @@ public class UserEntity {
 
     @Column(name = "type")
     private String type;
+
+    public UserEntity(String userId, String password, String nickName, String email, String phoneNumber, String type) {
+        this.userId = userId;
+        this.password = password;
+        this.nickName = nickName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.type = type;
+    }
 }

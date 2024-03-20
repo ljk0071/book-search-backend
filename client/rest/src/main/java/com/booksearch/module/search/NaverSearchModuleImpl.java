@@ -1,9 +1,9 @@
 package com.booksearch.module.search;
 
+import com.booksearch.dto.book.naver.NaverResponseDto;
+import com.booksearch.dto.book.naver.NaverXmlBook;
+import com.booksearch.dto.book.naver.NaverXmlBook.Channel.Item;
 import com.booksearch.dto.common.KeywordSearchRequestDto;
-import com.booksearch.dto.naver.NaverResponseDto;
-import com.booksearch.dto.naver.NaverXmlBook;
-import com.booksearch.dto.naver.NaverXmlBook.Channel.Item;
 import com.booksearch.exception.NaverErrorException;
 import com.booksearch.exception.NoMatchedBookException;
 import com.booksearch.mapper.BookClientMapper;
@@ -11,6 +11,7 @@ import com.booksearch.model.Book;
 import com.booksearch.model.BooksInfo;
 import com.booksearch.status.KakaoStatus;
 import com.booksearch.util.FileUtils;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
+@NoArgsConstructor
 public class NaverSearchModuleImpl implements SearchModule {
 
     private static final String NAVER_CLIENT_ID = FileUtils.getProperty("naver.book.api.id");
@@ -41,9 +43,6 @@ public class NaverSearchModuleImpl implements SearchModule {
                             .build()
             )
             .build();
-
-    public NaverSearchModuleImpl() {
-    }
 
     @Override
     public Book findBook(String isbn) {

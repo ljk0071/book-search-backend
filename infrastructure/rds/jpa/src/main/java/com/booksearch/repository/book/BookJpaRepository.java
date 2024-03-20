@@ -1,4 +1,4 @@
-package com.booksearch.repository;
+package com.booksearch.repository.book;
 
 import com.booksearch.entity.BookEntity;
 import org.springframework.data.domain.Page;
