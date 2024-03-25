@@ -3,6 +3,8 @@ package com.booksearch.util;
 import com.booksearch.exception.UserValidationException;
 import com.booksearch.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class UserValidator {
@@ -15,7 +17,7 @@ public class UserValidator {
 
     private static final Pattern emailRegex = Pattern.compile("^[a-zA-Z0-9]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
-    private static final Pattern phoneNumberRegex = Pattern.compile("^\\d{3}-\\d{3,4}-\\d{4}$");
+    private static final Pattern phoneNumberRegex = Pattern.compile("^\\d{3}\\d{3,4}\\d{4}$");
 
     private UserValidator() {
     }
@@ -30,24 +32,41 @@ public class UserValidator {
             throw new UserValidationException("빈 칸을 채워주세요!");
         }
 
+        List<String> failColumn = new ArrayList<>();
+
         if (!idRegex.matcher(user.getUserId()).matches()) {
-            throw new UserValidationException("아이디를 조건에 맞게 다시 입력해주세요 🥲");
+            failColumn.add("아이디");
         }
 
         if (!passwordRegex.matcher(user.getPassword()).matches()) {
-            throw new UserValidationException("비밀번호를 조건에 맞게 다시 입력해주세요 🥲");
+            failColumn.add("비밀번호");
         }
 
         if (!nickNameRegex.matcher(user.getNickName()).matches()) {
-            throw new UserValidationException("별명을 조건에 맞게 다시 입력해주세요 🥲");
+            failColumn.add("별명");
         }
 
         if (!emailRegex.matcher(user.getEmail()).matches()) {
-            throw new UserValidationException("이메일을 조건에 맞게 다시 입력해주세요 🥲");
+            failColumn.add("이메일");
         }
 
         if (!phoneNumberRegex.matcher(user.getPhoneNumber()).matches()) {
-            throw new UserValidationException("휴대폰 번호를 조건에 맞게 다시 입력해주세요 🥲");
+            failColumn.add("휴대폰 번호");
         }
+
+        if (!failColumn.isEmpty()) {
+            throw new UserValidationException(queryFailMessage(StringUtils.joinWithCommas(failColumn)));
+        }
+    }
+
+    private static String queryFailMessage(String text) {
+
+        if (StringUtils.hasFinalConsonant(text)) {
+            text = text + "을";
+        } else {
+            text = text + "를";
+        }
+
+        return text + " 조건에 맞게 다시 입력해 주세요 🥲";
     }
 }

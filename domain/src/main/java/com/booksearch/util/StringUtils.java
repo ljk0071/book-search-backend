@@ -17,4 +17,10 @@ public class StringUtils {
         texts.forEach(sj::add);
         return sj.toString();
     }
+
+    public static boolean hasFinalConsonant(String text) {
+        char lastWord = text.charAt(text.length() - 1);
+        return (lastWord - 0xac00) % 28 > 0;
+    }
+
 }
