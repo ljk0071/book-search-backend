@@ -4,6 +4,7 @@ import com.booksearch.dto.user.UserRequestDto;
 import com.booksearch.model.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserClientMapper {
@@ -14,6 +15,8 @@ public class UserClientMapper {
                 requestDto.getNickName(),
                 requestDto.getEmail(),
                 requestDto.getPhoneNumber(),
-                requestDto.getType());
+                null,
+                null,
+                null);
     }
 }

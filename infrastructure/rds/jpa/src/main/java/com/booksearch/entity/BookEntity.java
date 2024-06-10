@@ -49,7 +49,6 @@ public class BookEntity extends BaseEntity {
     private String thumbnail;
 
     public BookEntity(Long id, String title, String authors, String contents, LocalDateTime publishDateTime, int price, String publisher, String thumbnail) {
-        super(null);
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -61,7 +60,6 @@ public class BookEntity extends BaseEntity {
     }
 
     public BookEntity(LocalDateTime updateAt, Long id, String title, String authors, String contents, LocalDateTime publishDateTime, int price, String publisher, String thumbnail) {
-        super(updateAt);
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -74,7 +72,6 @@ public class BookEntity extends BaseEntity {
 
     @Builder
     public BookEntity(LocalDateTime updateAt, Long id, String title, String authors, String contents, LocalDateTime publishDateTime, List<String> isbns, int price, String publisher, String thumbnail) {
-        super(updateAt);
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -87,6 +84,5 @@ public class BookEntity extends BaseEntity {
     }
 
     public BookEntity() {
-        super(null);
     }
 }

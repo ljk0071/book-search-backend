@@ -4,7 +4,7 @@ public class SearchHistory {
 
     String keyword;
 
-    Long savedBooks;
+    long savedBooks;
 
     String source;
 
@@ -16,7 +16,7 @@ public class SearchHistory {
         this.source = source;
     }
 
-    public SearchHistory(String keyword, Long savedBooks, String source) {
+    public SearchHistory(String keyword, long savedBooks, String source) {
         this.keyword = keyword;
         this.savedBooks = savedBooks;
         this.source = source;
@@ -26,7 +26,7 @@ public class SearchHistory {
         return keyword;
     }
 
-    public Long getSavedBooks() {
+    public long getSavedBooks() {
         return savedBooks;
     }
 

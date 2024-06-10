@@ -1,12 +1,14 @@
 package com.booksearch.util;
 
 import com.booksearch.exception.AsyncException;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-@Slf4j
 public class AsyncUtils {
+
+    private static final Logger logger = Logger.getLogger(AsyncUtils.class.getName());
 
     private AsyncUtils() {
     }
@@ -15,7 +17,7 @@ public class AsyncUtils {
         CompletableFuture.runAsync(runnable)
                 .handle((result, exception) -> {
                     if (exception != null) {
-                        log.error("error when async", exception);
+                        logger.log(Level.SEVERE, exception, () -> "error when async");
                         throw new AsyncException();
                     }
                     return result;

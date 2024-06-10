@@ -6,5 +6,7 @@ public interface SearchHistoryRepository {
 
     void createBackupHistory(SearchHistory searchHistory);
 
+    void updateBackupHistory(SearchHistory searchHistory);
+
     SearchHistory findByKeywordAndSource(SearchHistory searchHistory);
 }

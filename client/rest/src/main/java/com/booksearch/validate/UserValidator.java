@@ -1,7 +1,9 @@
-package com.booksearch.util;
+package com.booksearch.validate;
 
+import com.booksearch.dto.user.UserRequestDto;
 import com.booksearch.exception.UserValidationException;
 import com.booksearch.model.User;
+import com.booksearch.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,9 @@ public class UserValidator {
 
     public static void checkValidation(User user) {
         if (!(StringUtils.hasText(user.getUserId()) ||
-                StringUtils.hasText(user.getPassword()) ||
                 StringUtils.hasText(user.getNickName()) ||
                 StringUtils.hasText(user.getEmail()) ||
-                StringUtils.hasText(user.getPhoneNumber()) ||
-                StringUtils.hasText(user.getType()))) {
+                StringUtils.hasText(user.getPhoneNumber()))) {
             throw new UserValidationException("빈 칸을 채워주세요!");
         }
 
@@ -36,10 +36,6 @@ public class UserValidator {
 
         if (!idRegex.matcher(user.getUserId()).matches()) {
             failColumn.add("아이디");
-        }
-
-        if (!passwordRegex.matcher(user.getPassword()).matches()) {
-            failColumn.add("비밀번호");
         }
 
         if (!nickNameRegex.matcher(user.getNickName()).matches()) {
@@ -51,6 +47,42 @@ public class UserValidator {
         }
 
         if (!phoneNumberRegex.matcher(user.getPhoneNumber()).matches()) {
+            failColumn.add("휴대폰 번호");
+        }
+
+        if (!failColumn.isEmpty()) {
+            throw new UserValidationException(queryFailMessage(StringUtils.joinWithCommas(failColumn)));
+        }
+    }
+
+    public static void checkValidation(UserRequestDto userRequestDto) {
+        if (!(StringUtils.hasText(userRequestDto.getUserId()) ||
+                StringUtils.hasText(userRequestDto.getPassword()) ||
+                StringUtils.hasText(userRequestDto.getNickName()) ||
+                StringUtils.hasText(userRequestDto.getEmail()) ||
+                StringUtils.hasText(userRequestDto.getPhoneNumber()))) {
+            throw new UserValidationException("빈 칸을 채워주세요!");
+        }
+
+        List<String> failColumn = new ArrayList<>();
+
+        if (!idRegex.matcher(userRequestDto.getUserId()).matches()) {
+            failColumn.add("아이디");
+        }
+
+        if (!passwordRegex.matcher(userRequestDto.getPassword()).matches()) {
+            failColumn.add("비밀번호");
+        }
+
+        if (!nickNameRegex.matcher(userRequestDto.getNickName()).matches()) {
+            failColumn.add("별명");
+        }
+
+        if (!emailRegex.matcher(userRequestDto.getEmail()).matches()) {
+            failColumn.add("이메일");
+        }
+
+        if (!phoneNumberRegex.matcher(userRequestDto.getPhoneNumber()).matches()) {
             failColumn.add("휴대폰 번호");
         }
 

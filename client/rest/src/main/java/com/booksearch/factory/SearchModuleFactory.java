@@ -19,7 +19,7 @@ public class SearchModuleFactory {
 
     @Bean
     public SearchModule getNormalStatusModule() {
-        if (KakaoStatus.isStatus()) {
+        if (!KakaoStatus.isStatus()) {
             return new KakaoSearchModuleImpl();
         } else if (NaverStatus.isStatus()) {
             return new NaverSearchModuleImpl();

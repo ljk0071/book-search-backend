@@ -29,8 +29,4 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(name = "UPDATE_DATE_TIME")
     private LocalDateTime updatedAt;
-
-    protected BaseEntity(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

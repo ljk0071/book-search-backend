@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Book {
 
@@ -93,5 +94,10 @@ public class Book {
         } else if (isbn.length() == 24 || isbn.length() == 27) {
             this.isbns.addAll(Arrays.asList(isbn.split(" ")));
         }
+    }
+
+    public void updateIsbns(Set<String> isbns) {
+        this.isbns.clear();
+        this.isbns.addAll(isbns);
     }
 }

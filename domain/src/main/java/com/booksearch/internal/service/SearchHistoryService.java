@@ -16,6 +16,10 @@ public class SearchHistoryService {
         repository.createBackupHistory(searchHistory);
     }
 
+    public void updateBackupHistory(SearchHistory searchHistory) {
+        repository.updateBackupHistory(searchHistory);
+    }
+
     public SearchHistory findSearchedHistory(SearchHistory searchHistory) {
         return repository.findByKeywordAndSource(searchHistory);
     }
