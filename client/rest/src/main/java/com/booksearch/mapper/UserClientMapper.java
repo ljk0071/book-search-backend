@@ -16,7 +16,7 @@ public class UserClientMapper {
                 requestDto.getEmail(),
                 requestDto.getPhoneNumber(),
                 null,
-                null,
-                null);
+                false,
+                false);
     }
 }
