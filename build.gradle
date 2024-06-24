@@ -40,7 +40,7 @@ subprojects {
     }
 
     springBoot {
-        mainClassName = 'com.booksearch.BookSearchApplication'
+        mainClass = 'com.booksearch.BookSearchApplication'
     }
 
     test {
