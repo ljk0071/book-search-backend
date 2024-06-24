@@ -39,6 +39,10 @@ subprojects {
         }
     }
 
+    springBoot {
+        mainClassName = 'com.booksearch.BookSearchApplication'
+    }
+
     test {
         useJUnitPlatform {
             excludeTags('restdocs')
